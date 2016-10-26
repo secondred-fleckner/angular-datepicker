@@ -197,12 +197,12 @@
               var modelDate = new Date($scope.year + '/' + $scope.monthNumber + '/' + $scope.day);
 
               if (attr.dateFormat) {
-
                 thisInput.val($filter('date')(modelDate, dateFormat));
               } else {
-
                 thisInput.val(modelDate);
               }
+
+              $scope.ngModel = new Date($scope.year + '/' + $scope.monthNumber + '/' + $scope.day);
 
               thisInput.triggerHandler('input');
               thisInput.triggerHandler('change');//just to be sure;
@@ -347,8 +347,7 @@
           , unregisterDataSetWatcher = $scope.$watch('dateSet', function dateSetWatcher(newValue) {
 
             if (newValue) {
-
-              date = new Date(newValue);
+              date = new Date( (isNaN(newValue) === true ? newValue : parseInt(newValue)) );
 
               $scope.month = $filter('date')(date, 'MMMM');//december-November like
               $scope.monthNumber = Number($filter('date')(date, 'MM')); // 01-12 like
@@ -797,6 +796,14 @@
         setDaysInMonth($scope.monthNumber, $scope.year);
         $scope.checkVisibility = checkVisibility;
 
+        if ($scope.ngModel) {
+          if ($scope.ngModel instanceof Date) {
+            $scope.dateSet = $scope.ngModel.getTime();
+          } else {
+            $scope.dateSet = $scope.ngModel;
+          }
+        }
+
         $scope.$on('$destroy', function unregisterListener() {
 
           unregisterDataSetWatcher();
@@ -809,6 +816,7 @@
       return {
         'restrict': 'AEC',
         'scope': {
+          'ngModel': '=',
           'dateSet': '@',
           'dateMinLimit': '@',
           'dateMaxLimit': '@',
