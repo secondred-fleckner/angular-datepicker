@@ -1,6 +1,6 @@
 {
   "name": "angularjs-datepicker",
-  "version": "2.1.6",
+  "version": "2.1.23",
   "description": "A datepicker directive for angularjs.",
   "homepage": "http://720kb.github.io/angular-datepicker",
   "keywords": [
@@ -12,7 +12,9 @@
     "input"
   ],
   "scripts": {
-    "precommit": "grunt lint"
+    "precommit": "grunt lint",
+    "lint": "grunt lint",
+    "dist": "grunt prod"
   },
   "main": "dist/angular-datepicker.min.js",
   "repository": {
@@ -25,6 +27,7 @@
     "grunt": "*",
     "grunt-concurrent": "*",
     "grunt-contrib-connect": "*",
+    "grunt-contrib-copy": "*",
     "grunt-contrib-csslint": "*",
     "grunt-contrib-cssmin": "*",
     "grunt-contrib-uglify": "*",
