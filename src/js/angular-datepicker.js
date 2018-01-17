@@ -57,7 +57,7 @@
             '</a>',
           '</div>',
           '<div class="_720kb-datepicker-calendar-header-middle _720kb-datepicker-calendar-month">',
-            '{{month}}&nbsp;',
+            '{{month}}  (M{{ getProjectMonth(year + \'/\' + monthNumber + \'/\' + 1) }})&nbsp;',
             '<a href="javascript:void(0)" ng-click="paginateYears(year); showYearsPagination = !showYearsPagination;">',
               '<span>',
                 '{{year}}',
@@ -107,13 +107,16 @@
 
       return [
         '<div class="_720kb-datepicker-calendar-body">',
-          '<a href="javascript:void(0)" ng-repeat="px in prevMonthDays" class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">',
+          '<a href="javascript:void(0)" ng-repeat="px in prevMonthDays" ng-class="{\'new-month-container\': isNewProjectmonth(getPrevDate(year,monthNumber,px))}" class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">',
+            '<div class="new-month disabled">M{{ getProjectMonth(getPrevDate(year,monthNumber,px)) }}</div><div class="arrow-right disabled"></div>',
             '{{px}}',
           '</a>',
-          '<a href="javascript:void(0)" ng-repeat="item in days" ng-click="setDatepickerDay(item)" ng-class="{\'_720kb-datepicker-active\': selectedDay === item && selectedMonth === monthNumber && selectedYear === year, \'_720kb-datepicker-disabled\': !isSelectableMinDate(year + \'/\' + monthNumber + \'/\' + item ) || !isSelectableMaxDate(year + \'/\' + monthNumber + \'/\' + item) || !isSelectableDate(monthNumber, year, item) || !isSelectableDay(monthNumber, year, item),\'_720kb-datepicker-today\': item === today.getDate() && monthNumber === (today.getMonth() + 1) && year === today.getFullYear() && !selectedDay}" class="_720kb-datepicker-calendar-day">',
+          '<a href="javascript:void(0)" ng-repeat="item in days" ng-click="setDatepickerDay(item)" ng-class="{\'new-month-container\': isNewProjectmonth(year + \'/\' + monthNumber + \'/\' + item),\'_720kb-datepicker-active\': selectedDay === item && selectedMonth === monthNumber && selectedYear === year, \'_720kb-datepicker-disabled\': !isSelectableMinDate(year + \'/\' + monthNumber + \'/\' + item ) || !isSelectableMaxDate(year + \'/\' + monthNumber + \'/\' + item) || !isSelectableDate(monthNumber, year, item) || !isSelectableDay(monthNumber, year, item),\'_720kb-datepicker-today\': item === today.getDate() && monthNumber === (today.getMonth() + 1) && year === today.getFullYear() && !selectedDay}" class="_720kb-datepicker-calendar-day">',
+            '<div class="new-month">M{{ getProjectMonth(year + \'/\' + monthNumber + \'/\' + item) }}</div><div class="arrow-right"></div>',
             '{{item}}',
           '</a>',
-          '<a href="javascript:void(0)" ng-repeat="nx in nextMonthDays" class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">',
+          '<a href="javascript:void(0)" ng-repeat="nx in nextMonthDays" ng-class="{\'new-month-container\': isNewProjectmonth(getNextDate(year,monthNumber,nx))}" class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">',
+            '<div class="new-month disabled">M{{ getProjectMonth(getNextDate(year,monthNumber,nx)) }}</div><div class="arrow-right disabled"></div>',
             '{{nx}}',
           '</a>',
         '</div>'
@@ -824,6 +827,60 @@
 
           return true;
         };
+
+        $scope.isNewProjectmonth = function isNewProjectmonth(aDate) {
+          var date = new Date(aDate);
+          date.setHours(12);
+          date.setMinutes(0);
+          date.setSeconds(0);
+
+          var datePrev = new Date(aDate);
+          datePrev.setHours(12);
+          datePrev.setMinutes(0);
+          datePrev.setSeconds(0);
+          datePrev.setDate(datePrev.getDate() - 1);
+
+          var m1 = $filter('projectMonth')(date, true);
+          var m2 = $filter('projectMonth')(datePrev, true);
+
+          if(m1 != m2){
+            return true;
+          }
+
+          return false;
+        };
+
+        $scope.getProjectMonth = function getProjectMonth(aDate){
+          var date = new Date(aDate);
+          date.setHours(12);
+          date.setMinutes(0);
+          date.setSeconds(0);
+
+          return $filter('projectMonth')(date, true);
+        }
+
+        $scope.getPrevDate = function getPrevDate(year, month, day){
+          if(month == 1){
+            month = 12;
+            year--;
+          } else{
+            month--;
+          }
+
+          return year + '/' + month + '/' + day;
+        }
+
+
+        $scope.getNextDate = function getNextDate(year, month, day){
+            if(month == 12){
+                month = 1;
+                year++;
+            } else{
+                month++;
+            }
+
+            return year + '/' + month + '/' + day;
+        }
 
         $scope.isSelectableMinDate = function isSelectableMinDate(aDate) {
           //if current date
