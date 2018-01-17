@@ -9,13 +9,13 @@ Angular datepicker is an angularjs directive that generates a datepicker calenda
 
 The Angularjs Datepicker is developed by [720kb](http://720kb.net).
 
-##Requirements
+## Requirements
 
 AngularJS v1.3+
 
-###Browser support
+### Browser support
 
-![Chrome](https://raw.github.com/alrra/browser-logos/master/chrome/chrome_48x48.png) | ![Firefox](https://raw.github.com/alrra/browser-logos/master/firefox/firefox_48x48.png) | ![IE](https://raw.github.com/alrra/browser-logos/master/internet-explorer/internet-explorer_48x48.png) | ![Opera](https://raw.github.com/alrra/browser-logos/master/opera/opera_48x48.png) | ![Safari](https://raw.github.com/alrra/browser-logos/master/safari/safari_48x48.png)
+Chrome | Firefox | IE | Opera | Safari
 --- | --- | --- | --- | --- |
  ✔ | ✔ | IE9 + | ✔ | ✔ |
 
@@ -37,14 +37,14 @@ To use the directive, include the Angular Datepicker's javascript and css files 
 </html>
 ```
 
-##Installation
+## Installation
 
-####Bower
+#### Bower
 
 ```
 $ bower install angularjs-datepicker --save
 ```
-####Npm
+#### Npm
 
 ```
 $ npm install angularjs-datepicker --save
@@ -52,7 +52,7 @@ $ npm install angularjs-datepicker --save
 
 _then load the js files in your html_
 
-###Add module dependency
+### Add module dependency
 
 Add the 720kb.datepicker module dependency
 
@@ -72,7 +72,7 @@ Call the directive wherever you want in your html page
 > By default the ng-model will show a Javascript Date() Object inside your input, you can use the options below to set your preferred date format to.
 
 
-##DOC
+## DOC
 
 Option | Type | Default | Description
 ------------- | ------------- | ------------- | -------------
@@ -85,19 +85,24 @@ date-format="" | String | String(new Date()) | Set the date format you want to u
 date-min-limit="" | String | false | Set a minimum date limit - you can use all the accepted date formats by the javascript `new Date()`
 date-max-limit="" | String | false | Set a maximum date limit - you can use all the accepted date formats by the javascript `new Date()`
 date-set-hidden="" | String(Boolean) | false | Set the default date to be shown only in calendar and not in the input field
-date-disabled-dates="" | String([Date(), Date(), ...]) | false | Disable specific dates using an _Array_ of dates
+date-disabled-dates="" | String([Date(), Date(), ...]) | false | Disable specific dates using an _Array_ of dates.
+date-enabled-dates="" | String([Date(), Date(), ...]) | false | Enable only the specific dates using an _Array_ of dates.
+date-disabled-weekdays="" | String(1, 5, ...]) | false | Disable specific weekdays using an _Array_ of weeks number
 date-refocus="" | String(Boolean) | false | Set the datepicker to re-focus the input after selecting a date
-date-typer="" | String(Boolean) | false | Set the datepicker to update calendar date when user is typing a date, see validation [tips](#date-validation) 
+date-typer="" | String(Boolean) | false | Set the datepicker to update calendar date when user is typing a date, see validation [tips](#date-validation)
+date-week-start-day="" | String(Number) | 0 | Set the first day of the week. Must be an integer between 0 (Sunday) and 6 (Saturday). (e.g. 1 for Monday)
 datepicker-class="" | String('class1 class2 class3') | false | Set custom class/es for the datepicker calendar
 datepicker-append-to="" | String('#id','.classname', 'body') | false | Append the datepicker to #id or  .class element or to body
-datepicker-toggle="" | String(Boolean) | true | Set the datepicker to toggle its visibility on focus and blur
+datepicker-toggle="" | String(Boolean) | true | Set the datepicker to toggle its visibility on focus and blur 
+| | | **tip:** Best is to use `pointer-events: none;` on your input if you don't want the user to toggle the calendar visibility.
 datepicker-show="" | String | false | Trigger the datepicker visibility, if true datepicker is shown if false it is hidden
- |  | | **tip:** _You may use this option together with datepicker-toggle="false" for a stable behavior_
+ |  | | **tip:** _Do not mix it with datepicker-toggle for a more stable behavior_
+datepicker-mobile="" | String | true | Set to `false` to force override of mobile styles. Especially useful for using desktop-style pagination control in mobile apps.
 
-##Options
+## Options
 Angular datepicker allows you to use some options via `attribute` data
 
-####Custom titles
+#### Custom titles
 
 You can set the titles for the month and year selectors with the **date-year-title=""** and **date-month-title=""** data attributes (default to is _"select month"_ and _"select year"_)
 
@@ -111,7 +116,17 @@ You can set the titles for the month and year selectors with the **date-year-tit
 </datepicker>
 ```
 
-####Custom buttons
+#### Highlight today day in  calendar
+To highlight or style the today day in the calendar just use its own CSS class (`._720kb-datepicker-today`) like this:
+
+```css
+._720kb-datepicker-calendar-day._720kb-datepicker-today {
+  background:red;
+  color:white;
+}
+```
+
+#### Custom buttons
 You can customize the calendar navigation buttons content, let's make an example while using [FontAwesome](http://fontawesome.io)
 
 ```html
@@ -120,7 +135,7 @@ You can customize the calendar navigation buttons content, let's make an example
 </datepicker>
 ```
 
-####Custom buttons titles for arrows
+#### Custom buttons titles for arrows
 You can also set the titles for the left and right arrows with **button-next-title=""** for the right and **button-prev-title=""** for the left. By default they are labeled _"next"_ and _"prev"_.
 
 ```html
@@ -133,7 +148,7 @@ You can also set the titles for the left and right arrows with **button-next-tit
 </datepicker>
 ```
 
-####Input as grandchild
+#### Input as grandchild
 Sometimes you cannot put date input as a first child of datepicker. In this case you may use `selector=""` to point to the CSS class of the input. Below example with using Twitter Bootstrap and FontAwesome
 
 ```html
@@ -146,7 +161,7 @@ Sometimes you cannot put date input as a first child of datepicker. In this case
     </div>
 </datepicker>
 ```
-####Manually show and hide datepicker
+#### Manually show and hide datepicker
 Sometimes you want to (manually/programmatically) show or hide the datepicker, this can be achieved using `datepicker-show` attribute, if `false`, datepicker is hidden, if `true`, datepicker is shown
 
 ```javascript
@@ -166,7 +181,7 @@ Sometimes you want to (manually/programmatically) show or hide the datepicker, t
 ```
 _tip: you should use this attribute together with `datepicker-toggle="false" , for a better stable behavior of the datepicker_
 
-####Input as grandchild
+#### Input as grandchild
 Sometimes you cannot put date input as a first child of datepicker. In this case you may use `selector=""` to point to the CSS class of the input. Below example with using Twitter Bootstrap and FontAwesome
 
 ```html
@@ -179,9 +194,9 @@ Sometimes you cannot put date input as a first child of datepicker. In this case
     </div>
 </datepicker>
 ```
-###Tips
+### Tips
 
-####Date validation
+#### Date validation
 If you want to validate the input, while user is typing for example, you just have to refer to the `ngModel`.
 As long as you use something like:
 ```html
@@ -193,14 +208,14 @@ You can show validation errors simply validating the ngModel, as you would do fo
 ```javascript
 .controller('Ctrl', ['$scope', function ($scope) {
   var liveDate;
-  
+
   $scope.$watch('myDate', function (value) {
     try {
      liveDate = new Date(value);
     } catch(e) {}
-    
+
     if (!liveDate) {
-    
+
       $scope.error = "This is not a valid date";
     } else {
       $scope.error = false;
@@ -222,7 +237,7 @@ Then your final html:
 
 [Live demo](https://720kb.github.io/angular-datepicker)
 
-##Themes :art:
+## Themes :art:
 You can edit the default Css file `angular-datepicker.css` if you want to make a new theme for the datepicker, then just add it to the ```themes``` dir and PR!
 
 More about it https://github.com/720kb/angular-datepicker/tree/master/themes.
@@ -231,7 +246,7 @@ Here is an example of a [Dark Theme](http://codepen.io/45kb/pen/bjslv) made usin
 
 ***_Please note that the example may not be uptodate with the latest angular and/or module version_
 
-##Contributing
+## Contributing
 
 We will be much grateful if you help us making this project to grow up.
 Feel free to contribute by forking, opening issues, pull requests etc.
