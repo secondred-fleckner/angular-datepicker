@@ -356,6 +356,10 @@
               }
             }
 
+            if(y < 100){
+              y = '20' + y;
+            }
+
             return new Date(y + '/' + m + '/' + d);
           }
           , setInputValue = function setInputValue() {
