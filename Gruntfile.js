@@ -44,8 +44,7 @@
 
     grunt.registerTask('lint', [
       'csslint',
-      'eslint',
-      'jscs'
+      'eslint'
     ]);
 
     grunt.registerTask('prod', [

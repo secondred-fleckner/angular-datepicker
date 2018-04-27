@@ -65,9 +65,7 @@ angular.module('app', [
 Call the directive wherever you want in your html page
 
 ```html
-<datepicker>
-  <input ng-model="date" type="text"/>
-</datepicker>
+<datepicker ng-model="date"></datepicker>
 ```
 > By default the ng-model will show a Javascript Date() Object inside your input, you can use the options below to set your preferred date format to.
 
@@ -76,10 +74,6 @@ Call the directive wherever you want in your html page
 
 Option | Type | Default | Description
 ------------- | ------------- | ------------- | -------------
-date-set="" | String | false | Set a default date to show and init datepicker
- |  | | **tip:** _Do not use same scope for ng-model="date" and date-set="{{date}}", this example is wrong._
- |  | | **tip:** _If you want to pass a Date Object inside do like this date-set="{{newDateObject.toString()}}"_
- |  | | **tip:** _Consider that `date-set="{{myDate}}"` equals to `new Date(attr.dateSet)`, be sure the date you pass inside date-set="" is always in a correct ISO format, or adjust it based on the browser locale to avoid problems with that."._
 date-format="" | String | String(new Date()) | Set the date format you want to use, see the list [here](https://docs.angularjs.org/api/ng/filter/date)
  |  | | **tip:** _Be always sure to use a recognized format, maybe try first of all to pass it through new Date('...') and see if it's recognized_
 date-min-limit="" | String | false | Set a minimum date limit - you can use all the accepted date formats by the javascript `new Date()`
@@ -107,13 +101,9 @@ Angular datepicker allows you to use some options via `attribute` data
 You can set the titles for the month and year selectors with the **date-year-title=""** and **date-month-title=""** data attributes (default to is _"select month"_ and _"select year"_)
 
 ```html
-<datepicker date-month-title="selected year">
-    <input ng-model="date"/>
-</datepicker>
+<datepicker ng-model="date" date-month-title="selected year"></datepicker>
 
-<datepicker date-year-title="selected title">
-    <input ng-model="date"/>
-</datepicker>
+<datepicker ng-model="date" date-year-title="selected title"></datepicker>
 ```
 
 #### Highlight today day in  calendar
@@ -130,29 +120,23 @@ To highlight or style the today day in the calendar just use its own CSS class (
 You can customize the calendar navigation buttons content, let's make an example while using [FontAwesome](http://fontawesome.io)
 
 ```html
-<datepicker button-prev="<i class='fa fa-arrow-left'></i>" button-next="<i class='fa fa-arrow-right'></i>">
-  <input ng-model="date" type="text"/>
-</datepicker>
+<datepicker ng-model="date" button-prev="<i class='fa fa-arrow-left'></i>" button-next="<i class='fa fa-arrow-right'></i>"></datepicker>
 ```
 
 #### Custom buttons titles for arrows
 You can also set the titles for the left and right arrows with **button-next-title=""** for the right and **button-prev-title=""** for the left. By default they are labeled _"next"_ and _"prev"_.
 
 ```html
-<datepicker button-prev-title="previous month">
-    <input ng-model="date"/>
-</datepicker>
+<datepicker ng-model="date" button-prev-title="previous month"></datepicker>
 
-<datepicker button-next-title="next month">
-    <input ng-model="date" type="text"/>
-</datepicker>
+<datepicker ng-model="date" button-next-title="next month"></datepicker>
 ```
 
 #### Input as grandchild
 Sometimes you cannot put date input as a first child of datepicker. In this case you may use `selector=""` to point to the CSS class of the input. Below example with using Twitter Bootstrap and FontAwesome
 
 ```html
-<datepicker date-format="yyyy-MM-dd" selector="form-control">
+<datepicker ng-model="date" date-format="yyyy-MM-dd" selector="form-control">
     <div class="input-group">
         <input class="form-control" placeholder="Choose a date"/>
         <span class="input-group-addon" style="cursor: pointer">
@@ -175,9 +159,7 @@ Sometimes you want to (manually/programmatically) show or hide the datepicker, t
   }]);
 ```
 ```html
-  <datepicker ng-controller="TestController" datepicker-show="{{visibility}}">
-      <input ng-model="date3" type="text" class="angular-datepicker-input"/>
-    </datepicker>
+  <datepicker ng-model="date3" ng-controller="TestController" datepicker-show="{{visibility}}"></datepicker>
 ```
 _tip: you should use this attribute together with `datepicker-toggle="false" , for a better stable behavior of the datepicker_
 
@@ -185,7 +167,7 @@ _tip: you should use this attribute together with `datepicker-toggle="false" , f
 Sometimes you cannot put date input as a first child of datepicker. In this case you may use `selector=""` to point to the CSS class of the input. Below example with using Twitter Bootstrap and FontAwesome
 
 ```html
-<datepicker date-format="yyyy-MM-dd" selector="form-control">
+<datepicker ng-model="date" date-format="yyyy-MM-dd" selector="form-control">
     <div class="input-group">
         <input class="form-control" placeholder="Choose a date"/>
         <span class="input-group-addon" style="cursor: pointer">
@@ -195,43 +177,6 @@ Sometimes you cannot put date input as a first child of datepicker. In this case
 </datepicker>
 ```
 ### Tips
-
-#### Date validation
-If you want to validate the input, while user is typing for example, you just have to refer to the `ngModel`.
-As long as you use something like:
-```html
-<div ng-controller="MyCtrl as ctrl">
-<input datepicker type="text" ng-model="myDate"/>
-</div>
-```
-You can show validation errors simply validating the ngModel, as you would do for any other type of input, for example:
-```javascript
-.controller('Ctrl', ['$scope', function ($scope) {
-  var liveDate;
-
-  $scope.$watch('myDate', function (value) {
-    try {
-     liveDate = new Date(value);
-    } catch(e) {}
-
-    if (!liveDate) {
-
-      $scope.error = "This is not a valid date";
-    } else {
-      $scope.error = false;
-    }
-  });
-}]);
-```
-
-Then your final html:
-```html
-<div ng-controller="MyCtrl as ctrl">
-<input type="text" ng-model="myDate" datepicker/>
-<div ng-show="ctrl.error">{{ctrl.error}}</div>
-</div>
-```
-
 
 ### Example
 
