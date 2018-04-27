@@ -20,11 +20,13 @@
   <title>Angularjs Datepicker</title>
 </head>
 <body ng-controller="TestController as ctrl">
+
+<form name="myForm">
   <div class="separator50"></div>
   <div class="col6 offset-left2">
     <div class="col3">
       Date 1 is: {{date1}}
-      <datepicker ng-model="date1" month-count-start="projectStartDate" date-format="yyyy-MM-dd" datepicker-class="test-custom-class" date-typer="true"></datepicker>
+      <datepicker required ng-model="date1" month-count-start="projectStartDate" date-format="yyyy-MM-dd" datepicker-class="test-custom-class" date-typer="true"></datepicker>
         <!--  date-min-limit="2018/02/28" date-max-limit="2018/05/03"
         <input ng-model="date1" type="text" class="angular-datepicker-input"/> -->
     </div>
@@ -45,10 +47,12 @@
   </div>
   <div class="col3">
     <b>Project Start Date:</b>
-    <datepicker ng-model="projectStartDate" month-count-start="projectStartDate"></datepicker>
+    <datepicker ng-model="projectStartDate" readonly month-count-start="projectStartDate"></datepicker>
   </div>
 </div>
   <button ng-click="invalidate('date1')">Invalidate Date1</button>
+  Form state: <b>{{myForm.$valid}}</b>
+</form>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular.min.js"></script>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular-route.min.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.6.0/angular-locale_es.js"></script>

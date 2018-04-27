@@ -117,23 +117,32 @@
         ];
     },
         generateDays = function generateDays() {
-      return [
-        '<div class="_720kb-datepicker-calendar-body">',
-          '<a href="javascript:void(0)" ng-repeat="px in prevMonthDays" ng-class="{\'new-month-container\': (monthCountStart | isMonthCountEdge:monthNumber:year:px:-1)}" class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">',
-            '<div class="new-month disabled">{{ monthCountStart | monthCount:monthNumber:year:px:-1 }}</div><div class="arrow-right disabled"></div>',
-            '{{px}}',
-          '</a>',
-          '<a href="javascript:void(0)" ng-repeat="item in days" ng-click="setDatepickerDay(item)" ng-class="{\'new-month-container\': (monthCountStart | isMonthCountEdge:monthNumber:year:item),\'_720kb-datepicker-active\': selectedDay === item && selectedMonth === monthNumber && selectedYear === year, \'_720kb-datepicker-disabled\': !isSelectableMinDate(year + \'/\' + monthNumber + \'/\' + item ) || !isSelectableMaxDate(year + \'/\' + monthNumber + \'/\' + item) || !isSelectableDate(monthNumber, year, item) || !isSelectableDay(monthNumber, year, item),\'_720kb-datepicker-today\': item === today.getDate() && monthNumber === (today.getMonth() + 1) && year === today.getFullYear() && !selectedDay}" class="_720kb-datepicker-calendar-day">',
-            '<div class="new-month">{{ monthCountStart | monthCount:monthNumber:year:item }}</div><div class="arrow-right"></div>',
-            '{{item}}',
-          '</a>',
-          '<a href="javascript:void(0)" ng-repeat="nx in nextMonthDays" ng-class="{\'new-month-container\': (monthCountStart | isMonthCountEdge:monthNumber:year:nx:1)}" class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">',
-            '<div class="new-month disabled">{{ monthCountStart | monthCount:monthNumber:year:nx:1 }}</div><div class="arrow-right disabled"></div>',
-            '{{nx}}',
-          '</a>',
-        '</div>'
-      ];
-    },
+            return [
+                '<div class="_720kb-datepicker-calendar-body">',
+                '<a href="javascript:void(0)" ng-repeat="px in prevMonthDays" ng-class="{\'new-month-container\': (monthCountStart | isMonthCountEdge:monthNumber:year:px:-1)}" class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">',
+                '<div class="new-month disabled">{{ monthCountStart | monthCount:monthNumber:year:px:-1 }}</div><div class="arrow-right disabled"></div>',
+                '{{px}}',
+                '</a>',
+                '<a href="javascript:void(0)" ng-repeat="item in days" ng-click="setDatepickerDay(item)" ng-class="{\'new-month-container\': (monthCountStart | isMonthCountEdge:monthNumber:year:item),\'_720kb-datepicker-active\': selectedDay === item && selectedMonth === monthNumber && selectedYear === year, \'_720kb-datepicker-disabled\': !isSelectableMinDate(year + \'/\' + monthNumber + \'/\' + item ) || !isSelectableMaxDate(year + \'/\' + monthNumber + \'/\' + item) || !isSelectableDate(monthNumber, year, item) || !isSelectableDay(monthNumber, year, item),\'_720kb-datepicker-today\': item === today.getDate() && monthNumber === (today.getMonth() + 1) && year === today.getFullYear() && !selectedDay}" class="_720kb-datepicker-calendar-day">',
+                '<div class="new-month">{{ monthCountStart | monthCount:monthNumber:year:item }}</div><div class="arrow-right"></div>',
+                '{{item}}',
+                '</a>',
+                '<a href="javascript:void(0)" ng-repeat="nx in nextMonthDays" ng-class="{\'new-month-container\': (monthCountStart | isMonthCountEdge:monthNumber:year:nx:1)}" class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">',
+                '<div class="new-month disabled">{{ monthCountStart | monthCount:monthNumber:year:nx:1 }}</div><div class="arrow-right disabled"></div>',
+                '{{nx}}',
+                '</a>',
+                '</div>'
+            ];
+        },
+        generateOptions = function generateOptions() {
+            return [
+                '<div class="_720kb-datepicker-calendar-options">',
+                '<a href="javascript:void(0)" ng-click="resetDatepickerValue()">',
+                'Reset selected date',
+                '</a>',
+                '</div>'
+            ];
+        },
         generateHtmlTemplate = function generateHtmlTemplate(prevButton, nextButton, preventMobile) {
         var toReturn = [
             '<div class="_720kb-datepicker-calendar {{datepickerClass}} {{datepickerID}}" ng-class="{\'_720kb-datepicker-forced-to-open\': checkVisibility()}" ng-blur="hideCalendar()">',
@@ -144,6 +153,7 @@
             yearsPaginationHeader = generateYearsPaginationHeader(prevButton, nextButton),
             daysColumns = generateDaysColumns(),
             days = generateDays(),
+            opts = generateOptions(),
             iterator = function iterator(aRow) {
                 toReturn.splice(toReturn.length - 1, 0, aRow);
             };
@@ -153,6 +163,7 @@
         yearsPaginationHeader.forEach(iterator);
         daysColumns.forEach(iterator);
         days.forEach(iterator);
+        opts.forEach(iterator);
 
         return toReturn.join('');
     };
@@ -387,7 +398,12 @@
                             if ($scope.isSelectableMinDate($scope.year + '/' + $scope.monthNumber + '/' + $scope.day) &&
                                 $scope.isSelectableMaxDate($scope.year + '/' + $scope.monthNumber + '/' + $scope.day)) {
 
+                                if ( Number.isNaN(Date.parse($scope.year + '/' + $scope.monthNumber + '/' + $scope.day)) ) {
+                                    return false;
+                                }
+
                                 var modelDate = new Date($scope.year + '/' + $scope.monthNumber + '/' + $scope.day);
+
                                 modelDate.setHours(12);
                                 $scope.ngModel = modelDate;
 
@@ -503,6 +519,15 @@
                         thisInput = angular.element('<input type="text" class="angular-datepicker-input" />');
                         element.append(thisInput);
                     }
+
+                    if ( angular.isDefined(attr.required) ) {
+                        thisInput[0].required  = true;
+                    }
+
+                    if ( angular.isDefined(attr.readonly) ) {
+                        thisInput[0].readOnly = true;
+                    }
+
 
                     /** $scope logic **/
                     $scope.prevMonth = function managePrevMonth() {
@@ -668,7 +693,8 @@
                         }
                     };
                     $scope.setDatepickerDay = function setDatepickerDay(day) {
-                        if ($scope.isSelectableDay($scope.monthNumber, $scope.year, day) &&
+                        if (angular.isUndefined(attr.readonly) &&
+                            $scope.isSelectableDay($scope.monthNumber, $scope.year, day) &&
                             $scope.isSelectableDate($scope.monthNumber, $scope.year, day) &&
                             $scope.isSelectableMaxDate($scope.year + '/' + $scope.monthNumber + '/' + day) &&
                             $scope.isSelectableMinDate($scope.year + '/' + $scope.monthNumber + '/' + day)) {
@@ -686,6 +712,14 @@
 
                             $scope.hideCalendar();
                         }
+                    };
+                    $scope.resetDatepickerValue = function resetDatepickerValue() {
+                        $scope.day = undefined;
+                        $scope.ngModel = null;
+
+                        setInputValue();
+
+                        $scope.hideCalendar();
                     };
                     $scope.paginateMonths = function paginateMonths(year){
                         $scope.paginationMonths = [];
@@ -966,34 +1000,39 @@
 
                     /** watcher **/
                     var unregisterDataSetWatcher = $scope.$watch('ngModel', function dateSetWatcher(newValue, oldValue) {
-                        if (typeof newValue === 'object' && newValue !== null && newValue.constructor.name === 'Date') {
-                            if (!Number.isNaN(Date.parse(newValue))) {
-                                date = newValue;
+                            if (typeof newValue === 'object' && newValue !== null && newValue.constructor.name === 'Date') {
+                                if (!Number.isNaN(Date.parse(newValue))) {
+                                    date = newValue;
+                                } else {
+                                    // Invalid date set
+                                    date = new Date();
+                                    thisInput.val('');
+                                    return;
+                                }
+                            } else if (angular.toString(newValue) && !Number.isNaN(Date.parse(newValue))) {
+                                date = new Date(newValue);
+                            } else {
+                                date = new Date();
+                                thisInput.val('');
+                                return;
                             }
-                        } else if (angular.toString(newValue) && !isNaN(Date.parse(newValue))) {
-                            date = new Date(newValue);
-                        } else {
-                            date = new Date();
-                            thisInput.val('');
-                            return;
-                        }
 
-                        if (typeof oldValue === typeof date && date.getTime() === oldValue.getTime()) {
-                            return;
-                        }
+                            if (typeof oldValue === typeof date && oldValue !== null && date.getTime() === oldValue.getTime()) {
+                                return;
+                            }
 
-                        $scope.month = $filter('date')(date, 'MMMM');//december-November like
-                        $scope.monthNumber = Number($filter('date')(date, 'MM')); // 01-12 like
-                        $scope.day = Number($filter('date')(date, 'dd')); //01-31 like
-                        $scope.year = Number($filter('date')(date, 'yyyy'));//2014 like
+                            $scope.month = $filter('date')(date, 'MMMM');//december-November like
+                            $scope.monthNumber = Number($filter('date')(date, 'MM')); // 01-12 like
+                            $scope.day = Number($filter('date')(date, 'dd')); //01-31 like
+                            $scope.year = Number($filter('date')(date, 'yyyy'));//2014 like
 
-                        setDaysInMonth($scope.monthNumber, $scope.year);
-                        $scope.paginateMonths($scope.year);
+                            setDaysInMonth($scope.monthNumber, $scope.year);
+                            $scope.paginateMonths($scope.year);
 
-                        if ($scope.dateSetHidden !== 'true') {
-                            setInputValue();
-                        }
-                    }),
+                            if ($scope.dateSetHidden !== 'true') {
+                                setInputValue();
+                            }
+                        }),
                         unregisterDateMinLimitWatcher = $scope.$watch('dateMinLimit', function dateMinLimitWatcher(newValue) {
                         if (newValue) {
                             resetToMinDate();

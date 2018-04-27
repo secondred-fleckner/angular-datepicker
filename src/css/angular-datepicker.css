@@ -207,3 +207,19 @@ datepicker, .datepicker, [datepicker],
   background: rgba(25,2,0,0.02);
   cursor: default;
 }
+datepicker[readonly] ._720kb-datepicker-calendar-body {
+  opacity: 0.75;
+  filter: grayscale(0.5);
+}
+datepicker[readonly] ._720kb-datepicker-calendar-day {
+  cursor: default;
+}
+._720kb-datepicker-calendar-options a {
+  font-weight: bold;
+  text-align: center;
+  display: block;
+  padding: 6px;
+}
+datepicker[readonly] ._720kb-datepicker-calendar-options {
+  display: none;
+}

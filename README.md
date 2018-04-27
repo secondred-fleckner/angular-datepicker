@@ -87,6 +87,8 @@ setDefaultDateFormat | "mediumDate" | Set the default date format you want to us
 Option | Type | Default | Description
 ------------- | ------------- | ------------- | -------------
 ng-model="" | Date() | undefined | the ng-model of the elements value
+readonly | Boolean | undefined | define the datepicker is readonly
+required | Boolean | undefined | marks it as required, ng-model can not be null for form.$valid handling
 month-count-start="" | Date() | undefined | if set, an ascending month index is appended to the days and months readouts as Mxx format
 date-format="" | String | String(new Date()) | Set the date format you want to use, see the list [here](https://docs.angularjs.org/api/ng/filter/date)
  |  | | **tip:** _Be always sure to use a recognized format, maybe try first of all to pass it through new Date('...') and see if it's recognized_
