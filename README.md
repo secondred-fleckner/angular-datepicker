@@ -69,11 +69,25 @@ Call the directive wherever you want in your html page
 ```
 > By default the ng-model will show a Javascript Date() Object inside your input, you can use the options below to set your preferred date format to.
 
+### Configure defaults
+
+```js
+  module.config(function(datepickerConfigProvider){
+      datepickerConfigProvider.setDefaultDateFormat('medium');
+  })
+```
+
+Function | Default | Description
+------------- | ------------- | -------------
+setDefaultDateFormat | "mediumDate" | Set the default date format you want to use in your application, see the list [here](https://docs.angularjs.org/api/ng/filter/date)
+
 
 ## DOC
 
 Option | Type | Default | Description
 ------------- | ------------- | ------------- | -------------
+ng-model="" | Date() | undefined | the ng-model of the elements value
+month-count-start="" | Date() | undefined | if set, an ascending month index is appended to the days and months readouts as Mxx format
 date-format="" | String | String(new Date()) | Set the date format you want to use, see the list [here](https://docs.angularjs.org/api/ng/filter/date)
  |  | | **tip:** _Be always sure to use a recognized format, maybe try first of all to pass it through new Date('...') and see if it's recognized_
 date-min-limit="" | String | false | Set a minimum date limit - you can use all the accepted date formats by the javascript `new Date()`

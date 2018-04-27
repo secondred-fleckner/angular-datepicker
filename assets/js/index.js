@@ -7,6 +7,10 @@
     'ngRoute',
     '720kb.datepicker'
   ])
+
+  .config(function(datepickerConfigProvider){
+      datepickerConfigProvider.setDefaultDateFormat('dd.MM.yyyy');
+  })
   .controller('TestController', ['$scope', '$interval', function TestController($scope, $interval) {
     var that = this;
 

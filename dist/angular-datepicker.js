@@ -19,64 +19,64 @@
             return false;
         }()),
         generateMonthAndYearHeader = function generateMonthAndYearHeader(prevButton, nextButton, preventMobile) {
-        if (preventMobile) {
-            isMobile = false;
-        }
+            if (preventMobile) {
+                isMobile = false;
+            }
 
-        if (isMobile) {
+            if (isMobile) {
+                return [
+                  '<div class="_720kb-datepicker-calendar-header">',
+                    '<div class="_720kb-datepicker-calendar-header-middle _720kb-datepicker-mobile-item _720kb-datepicker-calendar-month">',
+                      '<select ng-model="month" title="{{ dateMonthTitle }}" ng-change="selectedMonthHandle(month)">',
+                        '<option ng-repeat="item in months" ng-selected="item === month" ng-disabled=\'!isSelectableMaxDate(item + " " + day + ", " + year) || !isSelectableMinDate(item + " " + day + ", " + year)\' ng-value="$index + 1" value="$index + 1">',
+                          '{{ item }}',
+                        '</option>',
+                      '</select>',
+                    '</div>',
+                  '</div>',
+                  '<div class="_720kb-datepicker-calendar-header">',
+                    '<div class="_720kb-datepicker-calendar-header-middle _720kb-datepicker-mobile-item _720kb-datepicker-calendar-month">',
+                      '<select ng-model="mobileYear" title="{{ dateYearTitle }}" ng-change="setNewYear(mobileYear)">',
+                        '<option ng-repeat="item in paginationYears track by $index" ng-selected="year === item" ng-disabled="!isSelectableMinYear(item) || !isSelectableMaxYear(item)" ng-value="item" value="item">',
+                          '{{ item }}',
+                        '</option>',
+                      '</select>',
+                    '</div>',
+                  '</div>'
+                ];
+            }
+
             return [
-              '<div class="_720kb-datepicker-calendar-header">',
-                '<div class="_720kb-datepicker-calendar-header-middle _720kb-datepicker-mobile-item _720kb-datepicker-calendar-month">',
-                  '<select ng-model="month" title="{{ dateMonthTitle }}" ng-change="selectedMonthHandle(month)">',
-                    '<option ng-repeat="item in months" ng-selected="item === month" ng-disabled=\'!isSelectableMaxDate(item + " " + day + ", " + year) || !isSelectableMinDate(item + " " + day + ", " + year)\' ng-value="$index + 1" value="$index + 1">',
-                      '{{ item }}',
-                    '</option>',
-                  '</select>',
-                '</div>',
-              '</div>',
-              '<div class="_720kb-datepicker-calendar-header">',
-                '<div class="_720kb-datepicker-calendar-header-middle _720kb-datepicker-mobile-item _720kb-datepicker-calendar-month">',
-                  '<select ng-model="mobileYear" title="{{ dateYearTitle }}" ng-change="setNewYear(mobileYear)">',
-                    '<option ng-repeat="item in paginationYears track by $index" ng-selected="year === item" ng-disabled="!isSelectableMinYear(item) || !isSelectableMaxYear(item)" ng-value="item" value="item">',
-                      '{{ item }}',
-                    '</option>',
-                  '</select>',
-                '</div>',
-              '</div>'
+                '<div class="_720kb-datepicker-calendar-header">',
+                  '<div class="_720kb-datepicker-calendar-header-left">',
+                    '<a class="_720kb-datepicker-calendar-month-button" href="javascript:void(0)" ng-class="{\'_720kb-datepicker-item-hidden\': !willPrevMonthBeSelectable()}" ng-click="prevMonth()" title="{{ buttonPrevTitle }}">',
+                      prevButton,
+                    '</a>',
+                  '</div>',
+                  '<div class="_720kb-datepicker-calendar-header-middle-left _720kb-datepicker-calendar-month">',
+                    '<a href="javascript:void(0)" ng-click="paginateMonths(year); showYearsPagination = false; showMonthsPagination = !showMonthsPagination;">',
+                      '<span>',
+                        '{{month}} {{ monthCountStart | monthCount:monthNumber:year }}&nbsp;',
+                        '<i ng-class="{\'_720kb-datepicker-calendar-header-closed-pagination\': !showMonthsPagination, \'_720kb-datepicker-calendar-header-opened-pagination\': showMonthsPagination}"></i>',
+                      '</span>',
+                    '</a>',
+                  '</div>',
+                  '<div class="_720kb-datepicker-calendar-header-middle-right _720kb-datepicker-calendar-month">',
+                    '<a href="javascript:void(0)" ng-click="paginateYears(year); showMonthsPagination = false; showYearsPagination = !showYearsPagination;">',
+                      '<span>',
+                        '{{year}}',
+                        '<i ng-class="{\'_720kb-datepicker-calendar-header-closed-pagination\': !showYearsPagination, \'_720kb-datepicker-calendar-header-opened-pagination\': showYearsPagination}"></i>',
+                      '</span>',
+                    '</a>',
+                  '</div>',
+                  '<div class="_720kb-datepicker-calendar-header-right">',
+                  '<a class="_720kb-datepicker-calendar-month-button" ng-class="{\'_720kb-datepicker-item-hidden\': !willNextMonthBeSelectable()}" href="javascript:void(0)" ng-click="nextMonth()" title="{{ buttonNextTitle }}">',
+                    nextButton,
+                  '</a>',
+                  '</div>',
+                '</div>'
             ];
-        }
-
-        return [
-            '<div class="_720kb-datepicker-calendar-header">Project Start: {{ monthCountStart | date: \'dd.MM.y\' }}',
-              '<div class="_720kb-datepicker-calendar-header-left">',
-                '<a class="_720kb-datepicker-calendar-month-button" href="javascript:void(0)" ng-class="{\'_720kb-datepicker-item-hidden\': !willPrevMonthBeSelectable()}" ng-click="prevMonth()" title="{{ buttonPrevTitle }}">',
-                  prevButton,
-                '</a>',
-              '</div>',
-              '<div class="_720kb-datepicker-calendar-header-middle-left _720kb-datepicker-calendar-month">',
-                '<a href="javascript:void(0)" ng-click="paginateMonths(year); showYearsPagination = false; showMonthsPagination = !showMonthsPagination;">',
-                  '<span>',
-                    '{{month}} {{ monthCountStart | monthCount:monthNumber:year }}&nbsp;',
-                    '<i ng-class="{\'_720kb-datepicker-calendar-header-closed-pagination\': !showMonthsPagination, \'_720kb-datepicker-calendar-header-opened-pagination\': showMonthsPagination}"></i>',
-                  '</span>',
-                '</a>',
-              '</div>',
-              '<div class="_720kb-datepicker-calendar-header-middle-right _720kb-datepicker-calendar-month">',
-                '<a href="javascript:void(0)" ng-click="paginateYears(year); showMonthsPagination = false; showYearsPagination = !showYearsPagination;">',
-                  '<span>',
-                    '{{year}}',
-                    '<i ng-class="{\'_720kb-datepicker-calendar-header-closed-pagination\': !showYearsPagination, \'_720kb-datepicker-calendar-header-opened-pagination\': showYearsPagination}"></i>',
-                  '</span>',
-                '</a>',
-              '</div>',
-              '<div class="_720kb-datepicker-calendar-header-right">',
-              '<a class="_720kb-datepicker-calendar-month-button" ng-class="{\'_720kb-datepicker-item-hidden\': !willNextMonthBeSelectable()}" href="javascript:void(0)" ng-click="nextMonth()" title="{{ buttonNextTitle }}">',
-                nextButton,
-              '</a>',
-              '</div>',
-            '</div>'
-        ];
-    },
+        },
         generateMonthsPaginationHeader = function generateMonthsPaginationHeader() {
         return [
             '<div class="_720kb-datepicker-calendar-header grey" ng-show="showMonthsPagination">',
@@ -157,9 +157,21 @@
         return toReturn.join('');
     };
 
+    module.provider('datepickerConfig', function datepickerConfigProvider(){
+        this.defaultDateFormat = 'mediumDate';
+
+        this.setDefaultDateFormat = function setDefaultDateFormat(format) {
+            this.defaultDateFormat = format;
+        };
+
+        this.$get = function getter() {
+            return this;
+        };
+    });
+
     module.directive('datepicker', [
-        '$window', '$compile', '$locale', '$filter', '$interpolate',
-        function datepickerDirective($window, $compile, $locale, $filter, $interpolate) {
+        '$window', '$compile', '$locale', '$filter', '$interpolate', 'datepickerConfig',
+        function datepickerDirective($window, $compile, $locale, $filter, $interpolate, datepickerConfig) {
             return {
                 'restrict': 'AEC',
                 'require': '?ngModel', // get a hold of NgModelController
@@ -193,7 +205,7 @@
                         defaultNextButton = '<b class="_720kb-datepicker-default-button">&rang;</b>',
                         prevButton = attr.buttonPrev || defaultPrevButton,
                         nextButton = attr.buttonNext || defaultNextButton,
-                        dateFormat = attr.dateFormat,
+                        dateFormat = attr.dateFormat || datepickerConfig.defaultDateFormat,
                         dateDisabledDates = $scope.$eval($scope.dateDisabledDates),
                         dateEnabledDates = $scope.$eval($scope.dateEnabledDates),
                         dateDisabledWeekdays = $scope.$eval($scope.dateDisabledWeekdays),
@@ -379,7 +391,7 @@
                                 modelDate.setHours(12);
                                 $scope.ngModel = modelDate;
 
-                                if (attr.dateFormat) {
+                                if (dateFormat) {
                                     thisInput.val($filter('date')(modelDate, dateFormat));
                                 } else {
                                     thisInput.val(modelDate);
@@ -1080,7 +1092,6 @@
         }
     ]);
 
-
     module.filter('monthCount', function f(){
         return function i(startDate, indexMonth, indexYear, indexDay, monthOffset) {
             monthOffset = monthOffset || 0;
@@ -1111,7 +1122,6 @@
             return 'M' + (offset < 10 ? '0' : '') + offset;
         };
     });
-
     module.filter('isMonthCountEdge', ['$filter', function f($filter){
         return function i(startDate, indexMonth, indexYear, indexDay, monthOffset) {
             // todo: a fix for some might be invalid dates like 30.02.2018
