@@ -969,6 +969,7 @@
                     $scope.buttonNextTitle = $scope.buttonNextTitle || 'Next';
                     $scope.buttonPrevTitle = $scope.buttonPrevTitle || 'Prev';
                     $scope.month = $filter('date')(date, 'MMMM');//december-November like
+                    $scope.monthCountStart = $scope.monthCountStart || datepickerSettings.monthCountStart;
                     $scope.monthNumber = Number($filter('date')(date, 'MM')); // 01-12 like
                     $scope.day = Number($filter('date')(date, 'dd')); //01-31 like
                     $scope.dateWeekStartDay = $scope.validateWeekDay($scope.dateWeekStartDay);
