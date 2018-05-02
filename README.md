@@ -92,6 +92,7 @@ Furthermore some settings, which might happen in realtime, can be defined by a s
 ```js
   app.controller(function(datepickerSettings){
       datepickerSettings.timeshiftReference = '+0200';
+      datepickerSettings.monthCountStart = new Date();
   })
 ```
 

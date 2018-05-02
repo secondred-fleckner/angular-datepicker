@@ -53,6 +53,13 @@
           }
       });
 
+      $scope.$watch('projectStartDate', function(newvalue) {
+          if ( !Number.isNaN(Date.parse(newvalue)) ) {
+              console.log('set start date', newvalue);
+              $scope.settings.monthCountStart = newvalue;
+          }
+      });
+
 
     $scope.invalidate = function(date) {
       console.log('shall I destroy', date);

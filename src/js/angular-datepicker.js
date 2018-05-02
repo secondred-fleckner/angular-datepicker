@@ -197,6 +197,7 @@
 
     module.service('datepickerSettings', function datepickerSettingsService(){
         this.timeshiftReference = null;
+        this.monthCountStart = null;
     });
 
     module.directive('datepicker', [
@@ -1125,6 +1126,10 @@
                             if (newvalue !== null && !(attr.timeshiftReference || datepickerConfig.timezoneReference) && newvalue.timeshiftReference !== oldvalue.timeshiftReference) {
                                 $scope.timeshiftReference = newvalue.timeshiftReference;
                                 $scope.checkTimeshiftWarning();
+                            }
+
+                            if (newvalue !== null && !attr.monthCountStart && newvalue.monthCountStart !== oldvalue.monthCountStart) {
+                                $scope.monthCountStart = newvalue.monthCountStart;
                             }
                         }, true);
 
