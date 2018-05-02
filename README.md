@@ -72,14 +72,28 @@ Call the directive wherever you want in your html page
 ### Configure defaults
 
 ```js
-  module.config(function(datepickerConfigProvider){
+  app.config(function(datepickerConfigProvider){
       datepickerConfigProvider.setDefaultDateFormat('medium');
+      datepickerConfigProvider.useTyper(true);
+      datepickerConfigProvider.setTimezoneReference('+0130');
+      datepickerConfigProvider.setTimezoneWarning('<b>Warning!</b> Different timezone will lead into a different date ({{timeshiftReference}}): {{ ngModel | date:'mediumDate':timeshiftReference }}');
   })
 ```
 
 Function | Default | Description
 ------------- | ------------- | -------------
 setDefaultDateFormat | "mediumDate" | Set the default date format you want to use in your application, see the list [here](https://docs.angularjs.org/api/ng/filter/date)
+useTyper | undefined | If set true, will use the typer feature by default
+setTimezoneReference | "string" | Sets the timeshift offset as string like "+0430" in order to display a warning, if the date differs from the intented due to timezone differences
+setTimezoneWarning | "html" | A html snippet, that will be compiled in scope in case of a timeshift mismatch
+
+Furthermore some settings, which might happen in realtime, can be defined by a service:
+
+```js
+  app.controller(function(datepickerSettings){
+      datepickerSettings.timeshiftReference = '+0200';
+  })
+```
 
 
 ## DOC
@@ -108,6 +122,7 @@ datepicker-toggle="" | String(Boolean) | true | Set the datepicker to toggle its
 datepicker-show="" | String | false | Trigger the datepicker visibility, if true datepicker is shown if false it is hidden
  |  | | **tip:** _Do not mix it with datepicker-toggle for a more stable behavior_
 datepicker-mobile="" | String | true | Set to `false` to force override of mobile styles. Especially useful for using desktop-style pagination control in mobile apps.
+timeshiftReference="" | String | null | Can override the timeshiftReference used to determine a timezone offset mismatch in date
 
 ## Options
 Angular datepicker allows you to use some options via `attribute` data

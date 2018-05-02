@@ -8,16 +8,28 @@
     '720kb.datepicker'
   ])
 
-  .config(function(datepickerConfigProvider){
-      datepickerConfigProvider.setDefaultDateFormat('dd.MM.yyyy');
-  })
-  .controller('TestController', ['$scope', '$interval', function TestController($scope, $interval) {
+      .config(function(datepickerConfigProvider){
+          datepickerConfigProvider.setDefaultDateFormat('dd.MM.yyyy');
+          datepickerConfigProvider.useTyper(true);
+          datepickerConfigProvider.setTimezoneWarning('<span translate><strong>Attention: </strong>Different date in project-timezone ({{timeshiftReference}}): {{ ngModel | date:\'mediumDate\':timeshiftReference }}</span>');
+          //datepickerConfigProvider.setTimezoneReference('+0400');
+      })
+      /*.config(function($provide){
+          $provide.decorator('datepickerTimeshiftReference', function($delegate) {
+              console.log('decorating datepickerTimeshiftReference was', $delegate);
+              return '+0230';
+          });
+      })*/
+  .controller('TestController', ['$scope', '$interval', 'datepickerSettings', function TestController($scope, $interval, datepickerSettings) {
     var that = this;
 
     that.visibility = true;
 
     $scope.date1 = null;
+    $scope.timeshift = '-1100';
     $scope.projectStartDate = new Date('2017/08/15');
+    $scope.settings = datepickerSettings;
+    $scope.settings.timeshiftReference = $scope.timeshift;
 
     $scope.$watch('date1', function(newValue, oldValue){
       if (oldValue !== undefined) {
@@ -29,9 +41,18 @@
       }
     });
 
-    $scope.$watch('date2', function(newvalue) {
-        $scope.date1 = newvalue;
-    });
+      $scope.$watch('date2', function(newvalue) {
+          $scope.date1 = newvalue;
+      });
+
+
+      $scope.$watch('timeshift', function(newvalue) {
+          if ( newvalue.match(/^[\+-]([0-9]{4})$/) ) {
+              console.log('set timeshift', newvalue);
+              $scope.settings.timeshiftReference = newvalue;
+          }
+      });
+
 
     $scope.invalidate = function(date) {
       console.log('shall I destroy', date);

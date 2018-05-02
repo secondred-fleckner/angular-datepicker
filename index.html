@@ -26,7 +26,7 @@
   <div class="col6 offset-left2">
     <div class="col3">
       Date 1 is: {{date1}}
-      <datepicker required ng-model="date1" month-count-start="projectStartDate" date-format="yyyy-MM-dd" datepicker-class="test-custom-class" date-typer="true"></datepicker>
+      <datepicker required ng-model="date1" month-count-start="projectStartDate" date-format="yyyy-MM-dd" datepicker-class="test-custom-class" timeshift-reference="+0000"></datepicker>
         <!--  date-min-limit="2018/02/28" date-max-limit="2018/05/03"
         <input ng-model="date1" type="text" class="angular-datepicker-input"/> -->
     </div>
@@ -51,6 +51,7 @@
   </div>
 </div>
   <button ng-click="invalidate('date1')">Invalidate Date1</button>
+  <input ng-model="timeshift" />
   Form state: <b>{{myForm.$valid}}</b>
 </form>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular.min.js"></script>

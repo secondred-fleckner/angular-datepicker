@@ -1,5 +1,5 @@
 /*jslint browser: true */
-/*global angular document navigator window*/
+/*global angular document navigator window console*/
 (function withAngular(angular, navigator, window) {
     'use strict';
 
@@ -170,9 +170,24 @@
 
     module.provider('datepickerConfig', function datepickerConfigProvider(){
         this.defaultDateFormat = 'mediumDate';
+        this.defaultTyper = false;
+        this.timezoneReference = null;
+        this.timezoneWarning = 'WTF, look at dat timezone dude!';
 
         this.setDefaultDateFormat = function setDefaultDateFormat(format) {
             this.defaultDateFormat = format;
+        };
+        this.useTyper = function useTyper(flag) {
+            this.defaultTyper = flag ? true : false;
+        };
+        this.setTimezoneReference = function setTimezoneReference(timezoneRef) {
+            if ( !timezoneRef.match(/^[\+-]([0-9]{4})$/) ) {
+                console.warn('datepickerConfig: set timezone reference might have an invalid format (use "+0430")');
+            }
+            this.timezoneReference = timezoneRef;
+        };
+        this.setTimezoneWarning = function setTimezoneWarning(text) {
+            this.timezoneWarning = text;
         };
 
         this.$get = function getter() {
@@ -180,9 +195,13 @@
         };
     });
 
+    module.service('datepickerSettings', function datepickerSettingsService(){
+        this.timeshiftReference = null;
+    });
+
     module.directive('datepicker', [
-        '$window', '$compile', '$locale', '$filter', '$interpolate', 'datepickerConfig',
-        function datepickerDirective($window, $compile, $locale, $filter, $interpolate, datepickerConfig) {
+        '$window', '$compile', '$locale', '$filter', '$interpolate', 'datepickerConfig', 'datepickerSettings',
+        function datepickerDirective($window, $compile, $locale, $filter, $interpolate, datepickerConfig, datepickerSettings) {
             return {
                 'restrict': 'AEC',
                 'require': '?ngModel', // get a hold of NgModelController
@@ -193,6 +212,7 @@
                     'dateMaxLimit': '@',
                     'dateMonthTitle': '@',
                     'dateYearTitle': '@',
+                    'timeshiftReference': '<',
                     'buttonNextTitle': '@',
                     'buttonPrevTitle': '@',
                     'dateDisabledDates': '@',
@@ -212,6 +232,7 @@
                     var selector = attr.selector,
                         theCalendar,
                         thisInput = null,
+                        thisWarning = null,
                         defaultPrevButton = '<b class="_720kb-datepicker-default-button">&lang;</b>',
                         defaultNextButton = '<b class="_720kb-datepicker-default-button">&rang;</b>',
                         prevButton = attr.buttonPrev || defaultPrevButton,
@@ -507,6 +528,7 @@
                         return $scope.$eval($scope.datepickerShow);
                     };
 
+
                     // respect previously configured interpolation symbols.
                     htmlTemplate = htmlTemplate.replace(/{{/g, $interpolate.startSymbol()).replace(/}}/g, $interpolate.endSymbol());
 
@@ -527,7 +549,6 @@
                     if ( angular.isDefined(attr.readonly) ) {
                         thisInput[0].readOnly = true;
                     }
-
 
                     /** $scope logic **/
                     $scope.prevMonth = function managePrevMonth() {
@@ -766,7 +787,7 @@
                             theNewYears.push(Number(startingYear) + i);
                         }
                         //date typing in input date-typer
-                        if ($scope.dateTyper === 'true') {
+                        if ( datepickerConfig.defaultTyper === true && angular.isUndefined($scope.dateTyper) || $scope.dateTyper === 'true') {
                             thisInput.on('keyup blur', function onTyping() {
                                 if (thisInput[0].value &&
                                     thisInput[0].value.length &&
@@ -778,7 +799,7 @@
                                             tmpDate = new Date(thisInput[0].value.toString());
                                         }
 
-                                        if ( Number.isNaN(tmpDate.getTime()) ) {
+                                        if ( !tmpDate || Number.isNaN(tmpDate.getTime()) ) {
                                             window.console.warn('datepicker: dateTyper invalid date');
                                             return;
                                         }
@@ -916,7 +937,31 @@
                         }
                         return validWeekDay;
                     };
+                    $scope.checkTimeshiftWarning = function checkTimeshiftWarning(timeshift) {
+                        if (angular.isUndefined(timeshift)) {
+                            timeshift = $scope.timeshiftReference;
+                        }
 
+                        if (thisWarning !== null) {
+                            thisWarning.remove();
+                            thisWarning = null;
+                        }
+
+                        if ( angular.isDefined(timeshift) && timeshift !== null ) {
+                            if ( timeshift.match(/^[\+-]([0-9]{4})$/) ) {
+                                var refDate = new Date(),
+                                    d1 = $filter('date')(refDate, 'd'),
+                                    d2 = $filter('date')(refDate, 'd', timeshift);
+
+                                if (d1 !== d2) {
+                                    thisWarning = $compile('<ins class="_720kb-datepicker-timeshift-warning">' + datepickerConfig.timezoneWarning + '</ins>')($scope);
+                                    element.append(thisWarning);
+                                }
+                            } else {
+                                console.warn('datepicker: timeshiftReference format is invalid please use +0100 pattern. set: ' + $scope.timeshiftReference);
+                            }
+                        }
+                    };
 
                     $scope.dateMonthTitle = $scope.dateMonthTitle || 'Select month';
                     $scope.dateYearTitle = $scope.dateYearTitle || 'Select year';
@@ -927,6 +972,10 @@
                     $scope.day = Number($filter('date')(date, 'dd')); //01-31 like
                     $scope.dateWeekStartDay = $scope.validateWeekDay($scope.dateWeekStartDay);
 
+                    $scope.settings = datepickerSettings;
+                    $scope.timeshiftReference = attr.timeshiftReference || datepickerConfig.timezoneReference || $scope.settings.timeshiftReference;
+
+                    $scope.checkTimeshiftWarning();
 
                     if ($scope.dateMaxLimit) {
                         $scope.year = Number($filter('date')(new Date($scope.dateMaxLimit), 'yyyy'));//2014 like
@@ -1017,7 +1066,7 @@
                                 return;
                             }
 
-                            if (typeof oldValue === typeof date && oldValue !== null && date.getTime() === oldValue.getTime()) {
+                            if (typeof oldValue === typeof date && oldValue !== null && date && date.getTime() === oldValue.getTime()) {
                                 return;
                             }
 
@@ -1071,7 +1120,13 @@
                                 thisInput.triggerHandler('change');//just to be sure;
                             }
                         }
-                    });
+                    }),
+                        unregisterSettingsWatcher = $scope.$watch('settings', function unregisterSettingsWatcher(newvalue, oldvalue) {
+                            if (newvalue !== null && !(attr.timeshiftReference || datepickerConfig.timezoneReference) && newvalue.timeshiftReference !== oldvalue.timeshiftReference) {
+                                $scope.timeshiftReference = newvalue.timeshiftReference;
+                                $scope.checkTimeshiftWarning();
+                            }
+                        }, true);
 
 
                     /** DOM events **/
@@ -1122,6 +1177,7 @@
                         unregisterDateFormatWatcher();
                         unregisterDateDisabledDatesWatcher();
                         unregisterDateEnabledDatesWatcher();
+                        unregisterSettingsWatcher();
                         thisInput.off('focus click focusout blur keydown');
                         angular.element(theCalendar).off('mouseenter mouseleave focusin');
                         angular.element($window).off('click focus focusin', onClickOnWindow);
