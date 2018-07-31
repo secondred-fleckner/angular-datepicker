@@ -1,6 +1,6 @@
 {
   "name": "angularjs-datepicker",
-  "version": "2.1.27",
+  "version": "2.1.28",
   "description": "A datepicker directive for angularjs.",
   "homepage": "http://720kb.github.io/angular-datepicker",
   "keywords": [
@@ -42,6 +42,11 @@
     "url": "https://github.com/45kb"
   },
   "contributors": [
+    {
+      "name": "Martin Fleckner",
+      "email": "fleckner@secondred.de ",
+      "url": "https://github.com/secondred-fleckner"
+    },
     {
       "name": "Dario Andrei",
       "email": "wouldgo84@gmail.com",

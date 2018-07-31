@@ -1,5 +1,5 @@
 /*jslint browser: true */
-/*global angular document navigator window console*/
+/*global angular document navigator window*/
 (function withAngular(angular, navigator, window) {
     'use strict';
 
@@ -137,6 +137,9 @@
         generateOptions = function generateOptions() {
             return [
                 '<div class="_720kb-datepicker-calendar-options">',
+                '<a ng-click="resetDatepickerValue(true)">',
+                'Today',
+                '</a>',
                 '<a ng-click="resetDatepickerValue()">',
                 'Reset selected date',
                 '</a>',
@@ -182,7 +185,7 @@
         };
         this.setTimezoneReference = function setTimezoneReference(timezoneRef) {
             if ( !timezoneRef.match(/^[\+-]([0-9]{4})$/) ) {
-                console.warn('datepickerConfig: set timezone reference might have an invalid format (use "+0430")');
+                window.console.warn('datepickerConfig: set timezone reference might have an invalid format (use "+0430")');
             }
             this.timezoneReference = timezoneRef;
         };
@@ -735,9 +738,17 @@
                             $scope.hideCalendar();
                         }
                     };
-                    $scope.resetDatepickerValue = function resetDatepickerValue() {
-                        $scope.day = undefined;
-                        $scope.ngModel = null;
+                    $scope.resetDatepickerValue = function resetDatepickerValue(today) {
+
+                        if (angular.isDefined(today) && today === true) {
+                            $scope.ngModel = new Date();
+                            $scope.day = $scope.ngModel.getDate();
+                            $scope.monthNumber = $scope.ngModel.getMonth() + 1;
+                            $scope.year = $scope.ngModel.getFullYear();
+                        } else {
+                            $scope.day = undefined;
+                            $scope.ngModel = null;
+                        }
 
                         setInputValue();
 
@@ -959,7 +970,7 @@
                                     element.append(thisWarning);
                                 }
                             } else {
-                                console.warn('datepicker: timeshiftReference format is invalid please use +0100 pattern. set: ' + $scope.timeshiftReference);
+                                window.console.warn('datepicker: timeshiftReference format is invalid please use +0100 pattern. set: ' + $scope.timeshiftReference);
                             }
                         }
                     };
