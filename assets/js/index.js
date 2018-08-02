@@ -27,7 +27,7 @@
 
     $scope.date1 = null;
     $scope.timeshift = '-1100';
-    $scope.projectStartDate = new Date('2017/08/15');
+    //$scope.projectStartDate = new Date('2017/08/15');
     $scope.settings = datepickerSettings;
     $scope.settings.timeshiftReference = $scope.timeshift;
 

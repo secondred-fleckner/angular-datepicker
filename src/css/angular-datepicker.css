@@ -33,6 +33,7 @@ datepicker, .datepicker, [datepicker],
   float: left;
   clear: right;
   position: relative;
+  overflow: visible;
 }
 ._720kb-datepicker-calendar {
   background: white;
@@ -45,7 +46,7 @@ datepicker, .datepicker, [datepicker],
   -webkit-box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1) inset;
   -moz-box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1) inset;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1) inset;
-  visibility: hidden;
+  display: none;
   overflow:hidden;
   margin-left:-0.5%;
   padding: 0 0 2% 0;
@@ -54,7 +55,7 @@ datepicker, .datepicker, [datepicker],
   border-radius: 3px;
 }
 ._720kb-datepicker-calendar._720kb-datepicker-open,._720kb-datepicker-calendar._720kb-datepicker-forced-to-open {
-  visibility: visible;
+  display: block;
 }
 ._720kb-datepicker-calendar-header {
   text-align: center;
@@ -222,4 +223,21 @@ datepicker[readonly] ._720kb-datepicker-calendar-day {
 }
 datepicker[readonly] ._720kb-datepicker-calendar-options {
   display: none;
+}
+
+._720kb-align-bottom-left {
+  top: 100%;
+  left: 0px;
+}
+._720kb-align-bottom-right {
+  top: 100%;
+  right: 0px;
+}
+._720kb-align-top-left {
+  bottom: 100%;
+  left: 0px;
+}
+._720kb-align-top-right {
+  bottom: 100%;
+  right: 0px;
 }

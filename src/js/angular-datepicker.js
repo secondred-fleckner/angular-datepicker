@@ -118,7 +118,7 @@
     },
         generateDays = function generateDays() {
             return [
-                '<div class="_720kb-datepicker-calendar-body">',
+                '<div class="_720kb-datepicker-calendar-body" ng-class="{\'without-month-count\': monthCountStart === null}">',
                 '<a ng-repeat="px in prevMonthDays" ng-class="{\'new-month-container\': (monthCountStart | isMonthCountEdge:monthNumber:year:px:-1)}" class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">',
                 '<div class="new-month disabled">{{ monthCountStart | monthCount:monthNumber:year:px:-1 }}</div><div class="arrow-right disabled"></div>',
                 '{{px}}',
@@ -446,6 +446,41 @@
 
                             return true;
                         },
+                        getOffset = function getOffset() {
+                            var rect = thisInput[0].getBoundingClientRect(),
+                                win = thisInput[0].ownerDocument.defaultView;
+
+                            return {
+                                'top': rect.top + win.pageYOffset,
+                                'left': rect.left + win.pageXOffset,
+                                'height': rect.height,
+                                'width': rect.width,
+                                'win': win
+                            };
+                        },
+                        getAligmentClass = function getAligmentClass() {
+                            var offset = getOffset(),
+                                midElement = [
+                                    offset.left + offset.width / 2,
+                                    offset.top + offset.height / 2
+                                ],
+                                midWindow = [
+                                    offset.win.innerWidth / 2,
+                                    offset.win.innerHeight / 2
+                                ],
+                                v = 'bottom',
+                                h = 'left';
+
+                            if (midElement[1] > midWindow[1]) {
+                                v = 'top';
+                            }
+
+                            if (midElement[0] > midWindow[0]) {
+                                h = 'right';
+                            }
+
+                            return '_720kb-align-' + v + '-' + h;
+                        },
                         ClassHelper = {
                             'add': function add(ele, c) {
                                 var classes;
@@ -473,44 +508,47 @@
                             }
                         },
                         showCalendar = function showCalendar() {
-                        //lets hide all the latest instances of datepicker
-                        pageDatepickers = $window.document.getElementsByClassName('_720kb-datepicker-calendar');
+                            //lets hide all the latest instances of datepicker
+                            pageDatepickers = $window.document.getElementsByClassName('_720kb-datepicker-calendar');
 
-                        angular.forEach(pageDatepickers, function forEachDatepickerPages(value, key) {
-                            if (pageDatepickers[key].classList) {
-                                pageDatepickers[key].classList.remove('_720kb-datepicker-open');
-                            } else {
-                                ClassHelper.remove(pageDatepickers[key], '_720kb-datepicker-open');
-                            }
-                        });
+                            theCalendar.classList.remove('_720kb-align-bottom-right', '_720kb-align-bottom-left', '_720kb-align-top-right', '_720kb-align-top-left');
+                            theCalendar.classList.add(getAligmentClass());
 
-                        if (theCalendar.classList) {
-                            theCalendar.classList.add('_720kb-datepicker-open');
-                            if (dateFormat) {
-                                date = localDateTimestamp(thisInput[0].value.toString(), dateFormat);
-                            } else {
-                                date = new Date(thisInput[0].value.toString());
-                            }
-                            $scope.selectedMonth = Number($filter('date')(date, 'MM'));
-                            $scope.selectedDay = Number($filter('date')(date, 'dd'));
-                            $scope.selectedYear = Number($filter('date')(date, 'yyyy'));
-                        } else {
-                            ClassHelper.add(theCalendar, '_720kb-datepicker-open');
-                        }
-                        $scope.today = new Date();
+                            angular.forEach(pageDatepickers, function forEachDatepickerPages(value, key) {
+                                if (pageDatepickers[key].classList) {
+                                    pageDatepickers[key].classList.remove('_720kb-datepicker-open');
+                                } else {
+                                    ClassHelper.remove(pageDatepickers[key], '_720kb-datepicker-open');
+                                }
+                            });
 
-                        $scope.$evalAsync(function timeoutForYears() {
-                            if ($scope.selectedDay) {
-                                $scope.year = $scope.selectedYear;
-                                $scope.monthNumber = $scope.selectedMonth;
+                            if (theCalendar.classList) {
+                                theCalendar.classList.add('_720kb-datepicker-open');
+                                if (dateFormat) {
+                                    date = localDateTimestamp(thisInput[0].value.toString(), dateFormat);
+                                } else {
+                                    date = new Date(thisInput[0].value.toString());
+                                }
+                                $scope.selectedMonth = Number($filter('date')(date, 'MM'));
+                                $scope.selectedDay = Number($filter('date')(date, 'dd'));
+                                $scope.selectedYear = Number($filter('date')(date, 'yyyy'));
                             } else {
-                                $scope.year = $scope.today.getFullYear();
-                                $scope.monthNumber = $scope.today.getMonth() + 1;
+                                ClassHelper.add(theCalendar, '_720kb-datepicker-open');
                             }
-                            $scope.month = $filter('date')(new Date($scope.year, $scope.monthNumber - 1), 'MMMM');
-                            setDaysInMonth($scope.monthNumber, $scope.year);
-                        });
-                    },
+                            $scope.today = new Date();
+
+                            $scope.$evalAsync(function timeoutForYears() {
+                                if ($scope.selectedDay) {
+                                    $scope.year = $scope.selectedYear;
+                                    $scope.monthNumber = $scope.selectedMonth;
+                                } else {
+                                    $scope.year = $scope.today.getFullYear();
+                                    $scope.monthNumber = $scope.today.getMonth() + 1;
+                                }
+                                $scope.month = $filter('date')(new Date($scope.year, $scope.monthNumber - 1), 'MMMM');
+                                setDaysInMonth($scope.monthNumber, $scope.year);
+                            });
+                        },
                         checkToggle = function checkToggle() {
                         if (!$scope.datepickerToggle) {
                             return true;

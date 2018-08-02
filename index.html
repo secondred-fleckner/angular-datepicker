@@ -6,6 +6,10 @@
   <link rel="stylesheet" type="text/css" href="http://720kb.github.io/csshelper/assets/ext/src/helper.css">
   <link rel="stylesheet" type="text/css" href="src/css/angular-datepicker.css">
   <style>
+    body {
+      /*overflow: hidden*/
+    }
+
     input[type="text"] {
       border: 2px solid grey;
     }
@@ -16,12 +20,32 @@
     .new-month-container {
       outline: 3px solid rgba(120,120,255, 0.2);
     }
+
+    .crosshair {
+      position: fixed;
+      width: 3px;
+      height: 3px;
+      z-index: 1000;
+      border-radius: 50%;
+    }
+    .crosshair.red {background: red}
+    .crosshair.blue {background: blue}
+
+    datepicker.top-left { position: absolute; top: 0px; left: 0px; width: 120px; }
+    datepicker.top-right { position: absolute; top: 0px; right: 0px; width: 120px; }
+    datepicker.bottom-left { position: absolute; bottom: 0px; left: 0px; width: 120px; }
+    datepicker.bottom-right { position: absolute; bottom: 0px; right: 0px; width: 120px; }
   </style>
   <title>Angularjs Datepicker</title>
 </head>
 <body ng-controller="TestController as ctrl">
 
 <form name="myForm">
+  <datepicker required ng-model="date1" date-format="yyyy-MM-dd" class="top-left" timeshift-reference="+0000"></datepicker>
+  <datepicker required ng-model="date1" date-format="yyyy-MM-dd" class="top-right" timeshift-reference="+0000"></datepicker>
+  <datepicker required ng-model="date1" date-format="yyyy-MM-dd" class="bottom-left" timeshift-reference="+0000"></datepicker>
+  <datepicker required ng-model="date1" date-format="yyyy-MM-dd" class="bottom-right" timeshift-reference="+0000"></datepicker>
+
   <div class="separator50"></div>
   <div class="col6 offset-left2">
     <div class="col3">
@@ -52,7 +76,8 @@
 </div>
   <button ng-click="invalidate('date1')">Invalidate Date1</button>
   <input ng-model="timeshift" />
-  Form state: <b>{{myForm.$valid}}</b>
+  $valid: <b>{{myForm.$valid}}</b>
+  $dirty: <b>{{myForm.$dirty}}</b>
 </form>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular.min.js"></script>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular-route.min.js"></script>
