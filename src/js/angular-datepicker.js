@@ -123,7 +123,7 @@
                 '<div class="new-month disabled">{{ monthCountStart | monthCount:monthNumber:year:px:-1 }}</div><div class="arrow-right disabled"></div>',
                 '{{px}}',
                 '</a>',
-                '<a ng-repeat="item in days" ng-click="setDatepickerDay(item)" ng-class="{\'new-month-container\': (monthCountStart | isMonthCountEdge:monthNumber:year:item),\'_720kb-datepicker-active\': selectedDay === item && selectedMonth === monthNumber && selectedYear === year, \'_720kb-datepicker-disabled\': !isSelectableMinDate(year + \'/\' + monthNumber + \'/\' + item ) || !isSelectableMaxDate(year + \'/\' + monthNumber + \'/\' + item) || !isSelectableDate(monthNumber, year, item) || !isSelectableDay(monthNumber, year, item),\'_720kb-datepicker-today\': item === today.getDate() && monthNumber === (today.getMonth() + 1) && year === today.getFullYear() && !selectedDay}" class="_720kb-datepicker-calendar-day">',
+                '<a ng-repeat="item in days" ng-click="setDatepickerDay(item)" ng-class="{\'new-month-container\': (monthCountStart | isMonthCountEdge:monthNumber:year:item),\'_720kb-datepicker-active\': selectedDay === item && selectedMonth === monthNumber && selectedYear === year, \'_720kb-datepicker-disabled\': !isSelectableMinDate(year + \'/\' + monthNumber + \'/\' + item ) || !isSelectableMaxDate(year + \'/\' + monthNumber + \'/\' + item) || !isSelectableDate(monthNumber, year, item) || !isSelectableDay(monthNumber, year, item),\'_720kb-datepicker-today\': item === today.getDate() && monthNumber === (today.getMonth() + 1) && year === today.getFullYear()}" class="_720kb-datepicker-calendar-day">',
                 '<div class="new-month">{{ monthCountStart | monthCount:monthNumber:year:item }}</div><div class="arrow-right"></div>',
                 '{{item}}',
                 '</a>',
@@ -749,6 +749,10 @@
                         });
                     };
                     $scope.hideCalendar = function hideCalendar() {
+                        //hide month+year select
+                        $scope.showMonthsPagination = false;
+                        $scope.showYearsPagination = false;
+
                         if (theCalendar.classList) {
                             theCalendar.classList.remove('_720kb-datepicker-open');
                         } else {
