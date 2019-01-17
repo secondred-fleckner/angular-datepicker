@@ -419,7 +419,15 @@
 
                         return new Date(y + '/' + m + '/' + d);
                     },
-                        setInputValue = function setInputValue() {
+                        setInputValue = function setInputValue(reset) {
+                            if(angular.isDefined(reset) && reset){
+                                $scope.ngModel = null;
+                                thisInput.val('');
+                                thisInput.triggerHandler('input');
+                                thisInput.triggerHandler('change');
+                                return false;
+                            }
+
                             if ($scope.isSelectableMinDate($scope.year + '/' + $scope.monthNumber + '/' + $scope.day) &&
                                 $scope.isSelectableMaxDate($scope.year + '/' + $scope.monthNumber + '/' + $scope.day)) {
 
@@ -781,18 +789,18 @@
                         }
                     };
                     $scope.resetDatepickerValue = function resetDatepickerValue(today) {
-
                         if (angular.isDefined(today) && today === true) {
                             $scope.ngModel = new Date();
                             $scope.day = $scope.ngModel.getDate();
                             $scope.monthNumber = $scope.ngModel.getMonth() + 1;
                             $scope.year = $scope.ngModel.getFullYear();
+
+                            setInputValue();
                         } else {
                             $scope.day = undefined;
                             $scope.ngModel = null;
+                            setInputValue(true);
                         }
-
-                        setInputValue();
 
                         $scope.hideCalendar();
                     };
