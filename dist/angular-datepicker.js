@@ -119,15 +119,15 @@
         generateDays = function generateDays() {
             return [
                 '<div class="_720kb-datepicker-calendar-body" ng-class="{\'without-month-count\': monthCountStart === null}">',
-                '<a ng-repeat="px in prevMonthDays" ng-class="{\'new-month-container\': (monthCountStart | isMonthCountEdge:monthNumber:year:px:-1)}" class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">',
+                '<a ng-repeat="px in prevMonthDays" ng-class="{\'new-month-container\': (monthCountStart | isMonthCountEdge:monthNumber:year:px:-1:datepickerHidePms)}" class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">',
                 '<div class="new-month disabled">{{ monthCountStart | monthCount:monthNumber:year:px:-1 }}</div><div class="arrow-right disabled"></div>',
                 '{{px}}',
                 '</a>',
-                '<a ng-repeat="item in days" ng-click="setDatepickerDay(item)" ng-class="{\'new-month-container\': (monthCountStart | isMonthCountEdge:monthNumber:year:item),\'_720kb-datepicker-active\': selectedDay === item && selectedMonth === monthNumber && selectedYear === year, \'_720kb-datepicker-disabled\': !isSelectableMinDate(year + \'/\' + monthNumber + \'/\' + item ) || !isSelectableMaxDate(year + \'/\' + monthNumber + \'/\' + item) || !isSelectableDate(monthNumber, year, item) || !isSelectableDay(monthNumber, year, item),\'_720kb-datepicker-today\': item === today.getDate() && monthNumber === (today.getMonth() + 1) && year === today.getFullYear()}" class="_720kb-datepicker-calendar-day">',
+                '<a ng-repeat="item in days" ng-click="setDatepickerDay(item)" ng-class="{\'new-month-container\': (monthCountStart | isMonthCountEdge:monthNumber:year:item:0:datepickerHidePms),\'_720kb-datepicker-active\': selectedDay === item && selectedMonth === monthNumber && selectedYear === year, \'_720kb-datepicker-disabled\': !isSelectableMinDate(year + \'/\' + monthNumber + \'/\' + item ) || !isSelectableMaxDate(year + \'/\' + monthNumber + \'/\' + item) || !isSelectableDate(monthNumber, year, item) || !isSelectableDay(monthNumber, year, item),\'_720kb-datepicker-today\': item === today.getDate() && monthNumber === (today.getMonth() + 1) && year === today.getFullYear()}" class="_720kb-datepicker-calendar-day">',
                 '<div class="new-month">{{ monthCountStart | monthCount:monthNumber:year:item }}</div><div class="arrow-right"></div>',
                 '{{item}}',
                 '</a>',
-                '<a ng-repeat="nx in nextMonthDays" ng-class="{\'new-month-container\': (monthCountStart | isMonthCountEdge:monthNumber:year:nx:1)}" class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">',
+                '<a ng-repeat="nx in nextMonthDays" ng-class="{\'new-month-container\': (monthCountStart | isMonthCountEdge:monthNumber:year:nx:1:datepickerHidePms)}" class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">',
                 '<div class="new-month disabled">{{ monthCountStart | monthCount:monthNumber:year:nx:1 }}</div><div class="arrow-right disabled"></div>',
                 '{{nx}}',
                 '</a>',
@@ -228,7 +228,8 @@
                     'datepickerAppendTo': '@',
                     'datepickerToggle': '@',
                     'datepickerClass': '@',
-                    'datepickerShow': '@'
+                    'datepickerShow': '@',
+                    'datepickerHidePms': '='
                 },
                 'link': function link($scope, element, attr) {
 
@@ -1285,7 +1286,10 @@
         };
     });
     module.filter('isMonthCountEdge', ['$filter', function f($filter){
-        return function i(startDate, indexMonth, indexYear, indexDay, monthOffset) {
+        return function i(startDate, indexMonth, indexYear, indexDay, monthOffset, hidePms) {
+            if(angular.isDefined(hidePms) && hidePms !== null && hidePms){
+                return false;
+            }
             // todo: a fix for some might be invalid dates like 30.02.2018
             return $filter('monthCount')(startDate, indexMonth, indexYear, indexDay - 1, monthOffset) !== $filter('monthCount')(startDate, indexMonth, indexYear, indexDay, monthOffset);
         };
