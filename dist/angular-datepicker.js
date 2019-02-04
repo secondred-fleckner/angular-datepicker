@@ -204,8 +204,8 @@
     });
 
     module.directive('datepicker', [
-        '$window', '$compile', '$locale', '$filter', '$interpolate', 'datepickerConfig', 'datepickerSettings',
-        function datepickerDirective($window, $compile, $locale, $filter, $interpolate, datepickerConfig, datepickerSettings) {
+        '$window', '$compile', '$locale', '$filter', '$interpolate', '$timeout', 'datepickerConfig', 'datepickerSettings',
+        function datepickerDirective($window, $compile, $locale, $filter, $interpolate, $timeout, datepickerConfig, datepickerSettings) {
             return {
                 'restrict': 'AEC',
                 'require': '?ngModel', // get a hold of NgModelController
@@ -229,7 +229,9 @@
                     'datepickerToggle': '@',
                     'datepickerClass': '@',
                     'datepickerShow': '@',
-                    'datepickerHidePms': '='
+                    'datepickerHidePms': '=',
+                    'inputElement': '=',
+                    'dateFormat': '='
                 },
                 'link': function link($scope, element, attr) {
 
@@ -242,7 +244,7 @@
                         defaultNextButton = '<b class="_720kb-datepicker-default-button">&rang;</b>',
                         prevButton = attr.buttonPrev || defaultPrevButton,
                         nextButton = attr.buttonNext || defaultNextButton,
-                        dateFormat = attr.dateFormat || datepickerConfig.defaultDateFormat,
+                        dateFormat = $scope.dateFormat || datepickerConfig.defaultDateFormat,
                         dateDisabledDates = $scope.$eval($scope.dateDisabledDates),
                         dateEnabledDates = $scope.$eval($scope.dateEnabledDates),
                         dateDisabledWeekdays = $scope.$eval($scope.dateDisabledWeekdays),
@@ -360,6 +362,10 @@
                             return y;
                         },
                         localDateTimestamp = function localDateTimestamp(rawDate, dateFormatDefinition) {
+                        if(!angular.isDefined(rawDate) || rawDate == null){
+                            return new Date();
+                        }
+
                         var formattingTokens = /(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|MMMM|MMM|MM|M|dd?d?|yy?yy?y?|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g,
                             formatDate,
                             dateSplit,
@@ -420,7 +426,7 @@
 
                         return new Date(y + '/' + m + '/' + d);
                     },
-                        setInputValue = function setInputValue(reset) {
+                        setInputValue = function setInputValue(reset, isInitial) {
                             if(angular.isDefined(reset) && reset){
                                 $scope.ngModel = null;
                                 thisInput.val('');
@@ -447,8 +453,12 @@
                                     thisInput.val(modelDate);
                                 }
 
-                                thisInput.triggerHandler('input');
-                                thisInput.triggerHandler('change');//just to be sure;
+                                if(angular.isDefined($scope.inputElement) && $scope.inputElement !== null && isInitial){
+                                    $scope.inputElement.$setPristine();
+                                } else{
+                                    thisInput.triggerHandler('input');
+                                    thisInput.triggerHandler('change');//just to be sure;
+                                }
                             } else {
                                 return false;
                             }
@@ -1110,6 +1120,11 @@
                         setInputValue();
                     }
 
+                    // dont set dirty in init process
+                    var isInitProcess = true;
+                    $timeout(function(){
+                        isInitProcess = false;
+                    }, 2000);
 
                     /** watcher **/
                     var unregisterDataSetWatcher = $scope.$watch('ngModel', function dateSetWatcher(newValue, oldValue) {
@@ -1122,8 +1137,13 @@
                                     thisInput.val('');
                                     return;
                                 }
-                            } else if (angular.toString(newValue) && !Number.isNaN(Date.parse(newValue))) {
-                                date = new Date(newValue);
+                            } else if (angular.toString(newValue) && newValue !== null && newValue.length > 0) {
+                                date = localDateTimestamp(newValue, dateFormat);
+                                if(Number.isNaN(date.getTime())){
+                                    date = new Date();
+                                    thisInput.val('');
+                                    return;
+                                }
                             } else {
                                 date = new Date();
                                 thisInput.val('');
@@ -1143,7 +1163,7 @@
                             $scope.paginateMonths($scope.year);
 
                             if ($scope.dateSetHidden !== 'true') {
-                                setInputValue();
+                                setInputValue(false, isInitProcess);
                             }
                         }),
                         unregisterDateMinLimitWatcher = $scope.$watch('dateMinLimit', function dateMinLimitWatcher(newValue) {
@@ -1158,6 +1178,7 @@
                     }),
                         unregisterDateFormatWatcher = $scope.$watch('dateFormat', function dateFormatWatcher(newValue) {
                         if (newValue) {
+                            dateFormat = $scope.dateFormat;
                             setInputValue();
                         }
                     }),
