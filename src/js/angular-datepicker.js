@@ -244,11 +244,11 @@
                         defaultNextButton = '<b class="_720kb-datepicker-default-button">&rang;</b>',
                         prevButton = attr.buttonPrev || defaultPrevButton,
                         nextButton = attr.buttonNext || defaultNextButton,
-                        dateFormat = $scope.dateFormat || datepickerConfig.defaultDateFormat,
+                        dateFormat = $scope.dateFormat /*|| datepickerConfig.defaultDateFormat*/,
                         dateDisabledDates = $scope.$eval($scope.dateDisabledDates),
                         dateEnabledDates = $scope.$eval($scope.dateEnabledDates),
                         dateDisabledWeekdays = $scope.$eval($scope.dateDisabledWeekdays),
-                        date = !Number.isNaN(Date.parse($scope.ngModel)) ? $scope.ngModel : new Date(),
+                        date = !Number.isNaN(Date.parse($scope.ngModel)) ? $scope.ngModel : null,
                         isMouseOn = false,
                         isMouseOnInput = false,
                         preventMobile = typeof attr.datepickerMobile !== 'undefined' && attr.datepickerMobile !== 'false',
@@ -364,6 +364,10 @@
                         localDateTimestamp = function localDateTimestamp(rawDate, dateFormatDefinition) {
                         if(!angular.isDefined(rawDate) || rawDate == null){
                             return new Date();
+                        }
+
+                        if(!angular.isDefined(dateFormatDefinition) || dateFormatDefinition == null){
+                            return false;
                         }
 
                         var formattingTokens = /(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|MMMM|MMM|MM|M|dd?d?|yy?yy?y?|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g,
@@ -961,11 +965,11 @@
                     };
                     $scope.isSelectableMinDate = function isSelectableMinDate(aDate) {
                         //if current date
-                        return !(!!$scope.dateMinLimit && !!new Date($scope.dateMinLimit) && new Date(aDate).getTime() < new Date($scope.dateMinLimit).getTime());
+                        return !(!!$scope.dateMinLimit && !!new Date($scope.dateMinLimit) && new Date(aDate + ' 00:00:00').getTime() < new Date($scope.dateMinLimit + ' 00:00:00').getTime());
                     };
                     $scope.isSelectableMaxDate = function isSelectableMaxDate(aDate) {
                         //if current date
-                        return !(!!$scope.dateMaxLimit && !!new Date($scope.dateMaxLimit) && new Date(aDate).getTime() > new Date($scope.dateMaxLimit).getTime());
+                        return !(!!$scope.dateMaxLimit && !!new Date($scope.dateMaxLimit) && new Date(aDate + ' 00:00:00').getTime() > new Date($scope.dateMaxLimit + ' 00:00:00').getTime());
                     };
                     $scope.isSelectableMinMonth = function isSelectableMinMonth(month, year) {
                         var maxDayDate = new Date(year, month, 0),
@@ -1138,10 +1142,15 @@
                                     return;
                                 }
                             } else if (angular.toString(newValue) && newValue !== null && newValue.length > 0) {
-                                date = localDateTimestamp(newValue, dateFormat);
-                                if(Number.isNaN(date.getTime())){
-                                    date = new Date();
-                                    thisInput.val('');
+                                if(angular.isDefined(dateFormat)) {
+                                    date = localDateTimestamp(newValue, dateFormat);
+                                    if (!angular.isFunction(date.getTime) || Number.isNaN(date.getTime())) {
+                                        date = new Date();
+                                        thisInput.val('');
+                                        return;
+                                    }
+                                } else{
+                                    thisInput.val(newValue);
                                     return;
                                 }
                             } else {
@@ -1166,22 +1175,22 @@
                                 setInputValue(false, isInitProcess);
                             }
                         }),
-                        unregisterDateMinLimitWatcher = $scope.$watch('dateMinLimit', function dateMinLimitWatcher(newValue) {
-                        if (newValue) {
-                            resetToMinDate();
-                        }
-                    }),
-                        unregisterDateMaxLimitWatcher = $scope.$watch('dateMaxLimit', function dateMaxLimitWatcher(newValue) {
-                        if (newValue) {
-                            resetToMaxDate();
-                        }
-                    }),
-                        unregisterDateFormatWatcher = $scope.$watch('dateFormat', function dateFormatWatcher(newValue) {
-                        if (newValue) {
-                            dateFormat = $scope.dateFormat;
-                            setInputValue();
-                        }
-                    }),
+                        unregisterDateMaxLimitWatcher = $scope.$watch('dateMaxLimit', function dateMaxLimitWatcher(newValue, oldValue) {
+                            if (newValue && oldValue !== null && newValue !== oldValue && $scope.isSelectableMaxYear($scope.year) && $scope.isSelectableMaxDate($scope.year + '/' + $scope.monthNumber + '/' + $scope.day)) {
+                                resetToMaxDate();
+                            }
+                        }),
+                        unregisterDateMinLimitWatcher = $scope.$watch('dateMinLimit', function dateMinLimitWatcher(newValue, oldValue) {
+                            if (newValue && oldValue !== null && newValue !== oldValue && $scope.isSelectableMinYear($scope.year) && $scope.isSelectableMinDate($scope.year + '/' + $scope.monthNumber + '/' + $scope.day)) {
+                                resetToMinDate();
+                            }
+                        }),
+                        unregisterDateFormatWatcher = $scope.$watch('dateFormat', function dateFormatWatcher(newValue, oldValue) {
+                            if (newValue) {
+                                dateFormat = $scope.dateFormat;
+                                setInputValue(false, isInitProcess);
+                            }
+                        }),
                         unregisterDateDisabledDatesWatcher = $scope.$watch('dateDisabledDates', function dateDisabledDatesWatcher(newValue) {
                         if (newValue) {
                             dateDisabledDates = $scope.$eval(newValue);
