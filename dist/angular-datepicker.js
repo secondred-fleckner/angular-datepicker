@@ -137,7 +137,7 @@
         generateOptions = function generateOptions() {
             return [
                 '<div class="_720kb-datepicker-calendar-options">',
-                '<a ng-click="resetDatepickerValue(true)">',
+                '<a ng-show="isTodayVisible" ng-click="resetDatepickerValue(true)">',
                 'Today',
                 '</a>',
                 '<a ng-click="resetDatepickerValue()">',
@@ -1176,11 +1176,19 @@
                             }
                         }),
                         unregisterDateMaxLimitWatcher = $scope.$watch('dateMaxLimit', function dateMaxLimitWatcher(newValue, oldValue) {
+                            // Is today selectable
+                            var datetoday = new Date();
+                            $scope.isTodayVisible = $scope.isSelectableMaxDate(datetoday.getFullYear() + '/' + (datetoday.getMonth()+1) + '/' + datetoday.getDate())
+
                             if (newValue && oldValue !== null && newValue !== oldValue && $scope.isSelectableMaxYear($scope.year) && $scope.isSelectableMaxDate($scope.year + '/' + $scope.monthNumber + '/' + $scope.day)) {
                                 resetToMaxDate();
                             }
                         }),
                         unregisterDateMinLimitWatcher = $scope.$watch('dateMinLimit', function dateMinLimitWatcher(newValue, oldValue) {
+                            // Is today selectable
+                            var datetoday = new Date();
+                            $scope.isTodayVisible = $scope.isSelectableMinDate(datetoday.getFullYear() + '/' + (datetoday.getMonth()+1) + '/' + datetoday.getDate())
+
                             if (newValue && oldValue !== null && newValue !== oldValue && $scope.isSelectableMinYear($scope.year) && $scope.isSelectableMinDate($scope.year + '/' + $scope.monthNumber + '/' + $scope.day)) {
                                 resetToMinDate();
                             }
