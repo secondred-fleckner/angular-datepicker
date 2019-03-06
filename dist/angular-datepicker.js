@@ -231,7 +231,8 @@
                     'datepickerShow': '@',
                     'datepickerHidePms': '=',
                     'inputElement': '=',
-                    'dateFormat': '='
+                    'dateFormat': '=',
+                    'isReadonly': '='
                 },
                 'link': function link($scope, element, attr) {
 
@@ -531,6 +532,10 @@
                             }
                         },
                         showCalendar = function showCalendar() {
+                            if($scope.isReadonly){
+                                return;
+                            }
+
                             //lets hide all the latest instances of datepicker
                             pageDatepickers = $window.document.getElementsByClassName('_720kb-datepicker-calendar');
 
