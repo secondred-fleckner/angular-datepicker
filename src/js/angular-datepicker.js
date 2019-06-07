@@ -443,7 +443,7 @@
                             if ($scope.isSelectableMinDate($scope.year + '/' + $scope.monthNumber + '/' + $scope.day) &&
                                 $scope.isSelectableMaxDate($scope.year + '/' + $scope.monthNumber + '/' + $scope.day)) {
 
-                                if ( Number.isNaN(Date.parse($scope.year + '/' + $scope.monthNumber + '/' + $scope.day)) ) {
+                                if ($scope.year == 0 || Number.isNaN(Date.parse($scope.year + '/' + $scope.monthNumber + '/' + $scope.day)) ) {
                                     return false;
                                 }
 
