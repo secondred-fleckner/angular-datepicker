@@ -970,11 +970,11 @@
                     };
                     $scope.isSelectableMinDate = function isSelectableMinDate(aDate) {
                         //if current date
-                        return !(!!$scope.dateMinLimit && !!new Date($scope.dateMinLimit) && new Date(aDate + ' 00:00:00').getTime() < new Date($scope.dateMinLimit + ' 00:00:00').getTime());
+                        return !(!!$scope.dateMinLimit && !!new Date($scope.dateMinLimit) && new Date(aDate + ' 00:00:00').getTime() < new Date($scope.dateMinLimit + 'T00:00:00').getTime());
                     };
                     $scope.isSelectableMaxDate = function isSelectableMaxDate(aDate) {
                         //if current date
-                        return !(!!$scope.dateMaxLimit && !!new Date($scope.dateMaxLimit) && new Date(aDate + ' 00:00:00').getTime() > new Date($scope.dateMaxLimit + ' 00:00:00').getTime());
+                        return !(!!$scope.dateMaxLimit && !!new Date($scope.dateMaxLimit) && new Date(aDate + ' 00:00:00').getTime() > new Date($scope.dateMaxLimit + 'T00:00:00').getTime());
                     };
                     $scope.isSelectableMinMonth = function isSelectableMinMonth(month, year) {
                         var maxDayDate = new Date(year, month, 0),
