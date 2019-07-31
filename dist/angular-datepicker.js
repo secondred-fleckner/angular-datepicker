@@ -1242,7 +1242,9 @@
 
                     /** DOM events **/
                     thisInput.on('focusout blur', function onBlurAndFocusOut() {
-                        isMouseOnInput = false; setInputValue();
+                        isMouseOnInput = false;
+                        // das führt dazu, dass im Safari immer ein falsches Datum gesetzt wird. Darum erstmal auskommentiert
+                        //setInputValue();
                     });
                     thisInput.on('keydown', function onKeydown(e) {
                         switch (e.keyCode) {
