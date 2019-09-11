@@ -232,7 +232,8 @@
                     'datepickerHidePms': '=',
                     'inputElement': '=',
                     'dateFormat': '=',
-                    'isReadonly': '='
+                    'isReadonly': '=',
+                    'isOpen': '='
                 },
                 'link': function link($scope, element, attr) {
 
@@ -536,6 +537,10 @@
                                 return;
                             }
 
+                            if(angular.isDefined($scope.isOpen)){
+                                $scope.isOpen = true;
+                            }
+
                             //lets hide all the latest instances of datepicker
                             pageDatepickers = $window.document.getElementsByClassName('_720kb-datepicker-calendar');
 
@@ -780,6 +785,12 @@
                         //hide month+year select
                         $scope.showMonthsPagination = false;
                         $scope.showYearsPagination = false;
+
+                        if(angular.isDefined($scope.isOpen)){
+                            $scope.$evalAsync(function timeoutForYears() {
+                                $scope.isOpen = false;
+                            });
+                        }
 
                         if (theCalendar.classList) {
                             theCalendar.classList.remove('_720kb-datepicker-open');
