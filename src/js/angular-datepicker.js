@@ -364,11 +364,11 @@
                             return y;
                         },
                         localDateTimestamp = function localDateTimestamp(rawDate, dateFormatDefinition) {
-                        if(!angular.isDefined(rawDate) || rawDate == null){
+                        if (!angular.isDefined(rawDate) || rawDate === null){
                             return new Date();
                         }
 
-                        if(!angular.isDefined(dateFormatDefinition) || dateFormatDefinition == null){
+                        if (!angular.isDefined(dateFormatDefinition) || dateFormatDefinition === null) {
                             return false;
                         }
 
@@ -433,7 +433,7 @@
                         return new Date(y + '/' + m + '/' + d);
                     },
                         setInputValue = function setInputValue(reset, isInitial) {
-                            if(angular.isDefined(reset) && reset){
+                            if (angular.isDefined(reset) && reset) {
                                 $scope.ngModel = null;
                                 thisInput.val('');
                                 thisInput.triggerHandler('input');
@@ -444,7 +444,11 @@
                             if ($scope.isSelectableMinDate($scope.year + '/' + $scope.monthNumber + '/' + $scope.day) &&
                                 $scope.isSelectableMaxDate($scope.year + '/' + $scope.monthNumber + '/' + $scope.day)) {
 
-                                if ($scope.year == 0 || Number.isNaN(Date.parse($scope.year + '/' + $scope.monthNumber + '/' + $scope.day)) ) {
+                                if (Number.isNaN(Date.parse($scope.year + '/' + $scope.monthNumber + '/' + $scope.day)) ) {
+                                    return false;
+                                }
+
+                                if ($scope.year * $scope.monthNumber * $scope.day === 0) {
                                     return false;
                                 }
 
@@ -459,9 +463,9 @@
                                     thisInput.val(modelDate);
                                 }
 
-                                if(angular.isDefined($scope.inputElement) && $scope.inputElement !== null && isInitial){
+                                if (angular.isDefined($scope.inputElement) && $scope.inputElement !== null && isInitial) {
                                     $scope.inputElement.$setPristine();
-                                } else{
+                                } else {
                                     thisInput.triggerHandler('input');
                                     thisInput.triggerHandler('change');//just to be sure;
                                 }
@@ -533,11 +537,11 @@
                             }
                         },
                         showCalendar = function showCalendar() {
-                            if($scope.isReadonly){
+                            if ($scope.isReadonly) {
                                 return;
                             }
 
-                            if(angular.isDefined($scope.isOpen)){
+                            if (angular.isDefined($scope.isOpen)) {
                                 $scope.isOpen = true;
                             }
 
@@ -786,7 +790,7 @@
                         $scope.showMonthsPagination = false;
                         $scope.showYearsPagination = false;
 
-                        if(angular.isDefined($scope.isOpen)){
+                        if (angular.isDefined($scope.isOpen)) {
                             $scope.$evalAsync(function timeoutForYears() {
                                 $scope.isOpen = false;
                             });
@@ -1142,7 +1146,7 @@
 
                     // dont set dirty in init process
                     var isInitProcess = true;
-                    $timeout(function(){
+                    $timeout(function timeoutFunc(){
                         isInitProcess = false;
                     }, 2000);
 
@@ -1158,14 +1162,14 @@
                                     return;
                                 }
                             } else if (angular.toString(newValue) && newValue !== null && newValue.length > 0) {
-                                if(angular.isDefined(dateFormat)) {
+                                if (angular.isDefined(dateFormat)) {
                                     date = localDateTimestamp(newValue, dateFormat);
                                     if (!angular.isFunction(date.getTime) || Number.isNaN(date.getTime())) {
                                         date = new Date();
                                         thisInput.val('');
                                         return;
                                     }
-                                } else{
+                                } else {
                                     thisInput.val(newValue);
                                     return;
                                 }
@@ -1194,7 +1198,7 @@
                         unregisterDateMaxLimitWatcher = $scope.$watch('dateMaxLimit', function dateMaxLimitWatcher(newValue, oldValue) {
                             // Is today selectable
                             var datetoday = new Date();
-                            $scope.isTodayVisible = $scope.isSelectableMaxDate(datetoday.getFullYear() + '/' + (datetoday.getMonth()+1) + '/' + datetoday.getDate())
+                            $scope.isTodayVisible = $scope.isSelectableMaxDate(datetoday.getFullYear() + '/' + (datetoday.getMonth() + 1) + '/' + datetoday.getDate());
 
                             if (newValue && oldValue !== null && newValue !== oldValue && $scope.isSelectableMaxYear($scope.year) && $scope.isSelectableMaxDate($scope.year + '/' + $scope.monthNumber + '/' + $scope.day)) {
                                 resetToMaxDate();
@@ -1203,13 +1207,13 @@
                         unregisterDateMinLimitWatcher = $scope.$watch('dateMinLimit', function dateMinLimitWatcher(newValue, oldValue) {
                             // Is today selectable
                             var datetoday = new Date();
-                            $scope.isTodayVisible = $scope.isSelectableMinDate(datetoday.getFullYear() + '/' + (datetoday.getMonth()+1) + '/' + datetoday.getDate())
+                            $scope.isTodayVisible = $scope.isSelectableMinDate(datetoday.getFullYear() + '/' + (datetoday.getMonth() + 1) + '/' + datetoday.getDate());
 
                             if (newValue && oldValue !== null && newValue !== oldValue && $scope.isSelectableMinYear($scope.year) && $scope.isSelectableMinDate($scope.year + '/' + $scope.monthNumber + '/' + $scope.day)) {
                                 resetToMinDate();
                             }
                         }),
-                        unregisterDateFormatWatcher = $scope.$watch('dateFormat', function dateFormatWatcher(newValue, oldValue) {
+                        unregisterDateFormatWatcher = $scope.$watch('dateFormat', function dateFormatWatcher(newValue) {
                             if (newValue) {
                                 dateFormat = $scope.dateFormat;
                                 setInputValue(false, isInitProcess);
@@ -1343,7 +1347,7 @@
     });
     module.filter('isMonthCountEdge', ['$filter', function f($filter){
         return function i(startDate, indexMonth, indexYear, indexDay, monthOffset, hidePms) {
-            if(angular.isDefined(hidePms) && hidePms !== null && hidePms){
+            if (angular.isDefined(hidePms) && hidePms !== null && hidePms) {
                 return false;
             }
             // todo: a fix for some might be invalid dates like 30.02.2018
