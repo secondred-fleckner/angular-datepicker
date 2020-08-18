@@ -137,9 +137,14 @@
         generateOptions = function generateOptions() {
             return [
                 '<div class="_720kb-datepicker-calendar-options">',
-                '<a ng-show="isTodayVisible" ng-click="resetDatepickerValue(true)">',
+                '<a ng-show="isTodayVisible && (!customButtons || customButtons.length <= 0)" ng-click="resetDatepickerValue(true)">',
                 'Today',
                 '</a>',
+                '<ul ng-show="customButtons && customButtons.length > 0">',
+                '<li class="emdesk-tagcloud" ng-repeat="customButton in customButtons" ng-click="setCustomButtonValue(customButton)">',
+                '<span class="tagcloud custom-buttons">{{customButton.label}}</span>',
+                '</li>',
+                '</ul>',
                 '<a ng-click="resetDatepickerValue()">',
                 'Reset selected date',
                 '</a>',
@@ -235,7 +240,8 @@
                     'inputElement': '=',
                     'dateFormat': '=',
                     'isReadonly': '=',
-                    'isOpen': '='
+                    'isOpen': '=',
+                    'customButtons': '='
                 },
                 'link': function link($scope, element, attr) {
 
@@ -839,6 +845,18 @@
                             $scope.day = undefined;
                             $scope.ngModel = null;
                             setInputValue(true);
+                        }
+
+                        $scope.hideCalendar();
+                    };
+                    $scope.setCustomButtonValue = function setCustomButtonValue(customButton) {
+                        if (angular.isDefined(customButton) && customButton !== null && angular.isDefined(customButton.click_function) && angular.isFunction(customButton.click_function)) {
+                            $scope.ngModel = customButton.click_function();
+                            $scope.day = $scope.ngModel.getDate();
+                            $scope.monthNumber = $scope.ngModel.getMonth() + 1;
+                            $scope.year = $scope.ngModel.getFullYear();
+
+                            setInputValue();
                         }
 
                         $scope.hideCalendar();
