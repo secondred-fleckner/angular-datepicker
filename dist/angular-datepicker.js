@@ -56,7 +56,7 @@
                   '<div class="_720kb-datepicker-calendar-header-middle-left _720kb-datepicker-calendar-month">',
                     '<a ng-click="paginateMonths(year); showYearsPagination = false; showMonthsPagination = !showMonthsPagination;">',
                       '<span>',
-                        '{{month}} {{ monthCountStart | monthCount:monthNumber:year }}&nbsp;',
+                        '{{month|getTranslationValue:translations}} {{ monthCountStart | monthCount:monthNumber:year }}&nbsp;',
                         '<i ng-class="{\'_720kb-datepicker-calendar-header-closed-pagination\': !showMonthsPagination, \'_720kb-datepicker-calendar-header-opened-pagination\': showMonthsPagination}"></i>',
                       '</span>',
                     '</a>',
@@ -82,7 +82,7 @@
             '<div class="_720kb-datepicker-calendar-header grey" ng-show="showMonthsPagination">',
               '<div class="_720kb-datepicker-calendar-years-pagination">',
                 '<a ng-class="{\'_720kb-datepicker-active\': m.number === monthNumber, \'_720kb-datepicker-disabled\': !isSelectableMaxMonth(m.number, year) || !isSelectableMinMonth(m.number, year)}" ng-click="setNewMonth(m.number, year)" ng-repeat="m in paginationMonths track by $index">',
-                  '{{m.name}}',
+                    '{{m.monthName|getTranslationValue:translations}} ({{m.pm}})',
                 '</a>',
               '</div>',
             '</div>'
@@ -111,7 +111,7 @@
         return [
             '<div class="_720kb-datepicker-calendar-days-header">',
             '<div ng-repeat="d in daysInString">',
-              '{{d}}',
+                '{{d|getTranslationValue:translations}}',
             '</div>',
             '</div>'
         ];
@@ -138,7 +138,7 @@
             return [
                 '<div class="_720kb-datepicker-calendar-options">',
                 '<a ng-show="isTodayVisible && (!customButtons || customButtons.length <= 0)" ng-click="resetDatepickerValue(true)">',
-                'Today',
+                '{{"Today"|getTranslationValue:translations}}',
                 '</a>',
                 '<ul ng-show="customButtons && customButtons.length > 0">',
                 '<li class="emdesk-tagcloud" ng-repeat="customButton in customButtons" ng-click="setCustomButtonValue(customButton)">',
@@ -146,7 +146,7 @@
                 '</li>',
                 '</ul>',
                 '<a ng-click="resetDatepickerValue()">',
-                'Reset selected date',
+                '{{"Reset selected date"|getTranslationValue:translations}}',
                 '</a>',
                 '</div>'
             ];
@@ -239,7 +239,8 @@
                     'dateFormat': '=',
                     'isReadonly': '=',
                     'isOpen': '=',
-                    'customButtons': '='
+                    'customButtons': '=',
+                    'translations': '='
                 },
                 'link': function link($scope, element, attr) {
 
@@ -858,16 +859,19 @@
 
                         for (var m = 1; m <= 12; m++){
                             var dateMonth = new Date(year + '/' + m + '/1 12:00:00'),
-                                name = $filter('date')(dateMonth, 'MMM'),
+                                monthName = $filter('date')(dateMonth, 'MMM'),
                                 pm = $filter('monthCount')($scope.monthCountStart, m, year);
 
                             if (pm.length > 0){
-                                name += ' (' + pm + ')';
+                                var name = monthName + ' (' + pm + ')';
                             }
+
                             $scope.paginationMonths.push(
                                 {
                                     'number': m,
-                                    'name': name
+                                    'name': name,
+                                    'pm': pm,
+                                    'monthName': monthName
                                 }
                             );
                         }
@@ -1368,5 +1372,14 @@
             return $filter('monthCount')(startDate, indexMonth, indexYear, indexDay - 1, monthOffset) !== $filter('monthCount')(startDate, indexMonth, indexYear, indexDay, monthOffset);
         };
     }]);
+    module.filter('getTranslationValue', function f(){
+        return function getTranslationValue(value, translations) {
+            if(angular.isDefined(translations) && translations !== null && angular.isDefined(translations[value])){
+                return translations[value];
+            }
+
+            return value;
+        };
+    });
 
 }(angular, navigator, window));
